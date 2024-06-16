@@ -23,8 +23,7 @@ public class Offer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "description")
-    private String description;
+
     @Column(name = "time_to_register_offer")
     private LocalDateTime timeToRegisterOffer;
     @Column(name = "offer_price")
