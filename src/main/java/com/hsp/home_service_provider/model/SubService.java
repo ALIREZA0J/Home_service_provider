@@ -45,7 +45,7 @@ public class SubService  {
     private MainService mainService;
 
     @OneToMany(mappedBy = "subService",
-            cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.PERSIST,CascadeType.REFRESH,CascadeType.REMOVE})
+            cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REMOVE})
     private List<Order> orders;
 
 
