@@ -28,6 +28,9 @@ public class SubService  {
     @Column(name = "sub_service_name",nullable = false,unique = true)
     private String name;
 
+    @Column(name = "description")
+    private String description;
+
     @Min(value = 300_000,message = "The basic price of a sub-service should be at least 300_000.")
     @Column(name = "base_price")
     private Long basePrice;
