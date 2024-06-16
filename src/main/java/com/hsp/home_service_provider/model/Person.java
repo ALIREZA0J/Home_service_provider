@@ -10,9 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -50,4 +49,16 @@ public class Person {
     private LocalDate registrationDate;
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return Objects.equals(id, person.id) && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(gmail, person.gmail) && Objects.equals(password, person.password) && Objects.equals(registrationDate, person.registrationDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, gmail, password, registrationDate);
+    }
 }
