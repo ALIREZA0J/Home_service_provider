@@ -53,6 +53,7 @@ public class SubService  {
     public String toString() {
         return "Sub Service { Id- " + id +
                 " | name= " + name +
+                " | description= " + description +
                 " | basePrice= " + basePrice + " }";
     }
 
