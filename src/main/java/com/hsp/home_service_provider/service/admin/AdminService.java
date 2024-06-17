@@ -1,7 +1,6 @@
 package com.hsp.home_service_provider.service.admin;
 
 import com.hsp.home_service_provider.exception.AdminException;
-import com.hsp.home_service_provider.exception.DuplicateException;
 import com.hsp.home_service_provider.exception.MismatchException;
 import com.hsp.home_service_provider.model.Admin;
 import com.hsp.home_service_provider.model.MainService;
@@ -39,14 +38,22 @@ public class AdminService {
     }
 
     @Transactional
-    public void deleteMainService(Long id){
-        mainServiceService.delete(id);
+    public void deleteMainService(String mainServiceName){
+        mainServiceService.delete(mainServiceName);
     }
 
 
-    public SubService registerSubService(SubService subService, Long mainServiceId){
-        MainService mainService = mainServiceService.findById(mainServiceId);
+    public SubService registerSubService(SubService subService, String mainServiceName){
+        MainService mainService = mainServiceService.findByName(mainServiceName);
         subService.setMainService(mainService);
         return subServiceService.register(subService);
+    }
+
+    public void deleteSubService(String subServiceName){
+        subServiceService.delete(subServiceName);
+    }
+
+    public SubService updateSubService(SubService subService){
+        return subServiceService.update(subService);
     }
 }
