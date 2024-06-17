@@ -23,13 +23,19 @@ public class MainServiceService {
     }
 
     @Transactional
-    public void delete(Long id){
-        MainService mainService = findById(id);
+    public void delete(String serviceName){
+        MainService mainService = findByName(serviceName);
         mainServiceRepository.delete(mainService);
     }
 
     public MainService findById(Long id){
         return mainServiceRepository
-                .findById(id).orElseThrow(() -> new NotFoundException("Main-Service with id:"+id+" not found."));
+                .findById(id).orElseThrow(() -> new NotFoundException("Main-Service with (id:"+id+") not found."));
     }
+
+    public MainService findByName(String name){
+        return mainServiceRepository.findMainServiceByServiceName(name)
+                .orElseThrow( () -> new NotFoundException("A MainService with (name: "+name+") not found."));
+    }
+
 }
