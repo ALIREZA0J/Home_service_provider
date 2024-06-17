@@ -1,11 +1,14 @@
 package com.hsp.home_service_provider.service.admin;
 
 import com.hsp.home_service_provider.exception.AdminException;
+import com.hsp.home_service_provider.exception.DuplicateException;
 import com.hsp.home_service_provider.exception.MismatchException;
 import com.hsp.home_service_provider.model.Admin;
 import com.hsp.home_service_provider.model.MainService;
+import com.hsp.home_service_provider.model.SubService;
 import com.hsp.home_service_provider.repository.admin.AdminRepository;
 import com.hsp.home_service_provider.service.mainservice.MainServiceService;
+import com.hsp.home_service_provider.service.subservice.SubServiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,15 +18,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminService {
     private final AdminRepository adminRepository;
     private final MainServiceService mainServiceService;
+    private final SubServiceService subServiceService;
 
     public Admin logIn(String gmail , String password){
         return adminRepository.findAdminByGmailAndPassword(gmail, password)
                 .orElseThrow(() -> new AdminException("Gmail or Password is wrong."));
     }
 
-    public void changePassword(Long id,String password1,String password2){
-        Admin admin = adminRepository.findById(id)
-                .orElseThrow(() -> new AdminException("Admin with id:" + id + " not found."));
+    public void changePassword(Long adminId,String password1,String password2){
+        Admin admin = adminRepository.findById(adminId)
+                .orElseThrow(() -> new AdminException("Admin with id:" + adminId + " not found."));
         if (!password1.equals(password2))
             throw new MismatchException("Password and repeat password do not match");
         admin.setPassword(password1);
@@ -37,5 +41,12 @@ public class AdminService {
     @Transactional
     public void deleteMainService(Long id){
         mainServiceService.delete(id);
+    }
+
+
+    public SubService registerSubService(SubService subService, Long mainServiceId){
+        MainService mainService = mainServiceService.findById(mainServiceId);
+        subService.setMainService(mainService);
+        return subServiceService.register(subService);
     }
 }
