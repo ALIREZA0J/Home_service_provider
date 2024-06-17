@@ -24,8 +24,12 @@ public class MainServiceService {
 
     @Transactional
     public void delete(Long id){
-        MainService mainService = mainServiceRepository
-                .findById(id).orElseThrow(() -> new NotFoundException("Main-Service with id:"+id+" not found."));
+        MainService mainService = findById(id);
         mainServiceRepository.delete(mainService);
+    }
+
+    public MainService findById(Long id){
+        return mainServiceRepository
+                .findById(id).orElseThrow(() -> new NotFoundException("Main-Service with id:"+id+" not found."));
     }
 }
