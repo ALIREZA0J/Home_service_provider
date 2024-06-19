@@ -7,6 +7,7 @@ import com.hsp.home_service_provider.repository.mainservice.MainServiceRepositor
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,10 @@ public class MainServiceService {
     public MainService findByName(String name){
         return mainServiceRepository.findMainServiceByServiceName(name)
                 .orElseThrow( () -> new NotFoundException("A MainService with (name: "+name+") not found."));
+    }
+
+    public List<MainService> showAll(){
+        return mainServiceRepository.findAll();
     }
 
 }
