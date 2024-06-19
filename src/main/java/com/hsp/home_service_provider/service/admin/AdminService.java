@@ -43,7 +43,7 @@ public class AdminService {
         mainServiceService.delete(mainServiceName);
     }
 
-    public List<MainService> showAllMainService(){
+    public List<MainService> displayAllMainService(){
         return mainServiceService.showAll();
     }
 
@@ -60,5 +60,10 @@ public class AdminService {
 
     public SubService updateSubService(SubService subService){
         return subServiceService.update(subService);
+    }
+
+
+    public List<SubService> displaySubServiceOfMainService(String mainServiceName){
+        return subServiceService.findSubServicesOfMainService(mainServiceName);
     }
 }
