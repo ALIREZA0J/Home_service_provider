@@ -22,12 +22,12 @@ public class Customer extends Person{
     @Column(name = "credit")
     private Long credit;
 
-    @OneToMany(mappedBy = "customer" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer" , cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REMOVE})
     private List<Order> orders;
 
-    @OneToMany(mappedBy = "customer" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer" , cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REMOVE})
     private List<Address> addresses;
 
-    @OneToMany(mappedBy = "customer" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer" , cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REMOVE})
     private List<Comment> comments;
 }
