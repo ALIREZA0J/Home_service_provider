@@ -7,6 +7,8 @@ import com.hsp.home_service_provider.exception.ImageInputStreamException;
 import com.hsp.home_service_provider.model.Avatar;
 import com.hsp.home_service_provider.model.Specialist;
 import com.hsp.home_service_provider.model.enums.AvatarStatus;
+import org.springframework.stereotype.Component;
+
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
@@ -18,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Iterator;
 
+@Component
 public class AvatarUtil {
 
     public static void checkFileExist(File file) {
