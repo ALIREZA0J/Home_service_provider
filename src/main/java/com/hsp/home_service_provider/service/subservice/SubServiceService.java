@@ -2,17 +2,23 @@ package com.hsp.home_service_provider.service.subservice;
 
 import com.hsp.home_service_provider.exception.DuplicateException;
 import com.hsp.home_service_provider.exception.NotFoundException;
+import com.hsp.home_service_provider.exception.SubServiceException;
+import com.hsp.home_service_provider.model.MainService;
 import com.hsp.home_service_provider.model.SubService;
 import com.hsp.home_service_provider.repository.subservice.SubServiceRepository;
+import com.hsp.home_service_provider.service.mainservice.MainServiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class SubServiceService {
 
     private final SubServiceRepository subServiceRepository;
+    private final MainServiceService mainServiceService;
 
 
 
@@ -46,5 +52,13 @@ public class SubServiceService {
                 subServiceFind.setBasePrice(subService.getBasePrice());
         }
         return subServiceRepository.save(subServiceFind);
+    }
+
+    public List<SubService> findSubServicesOfMainService(String mainServiceName){
+        MainService mainService = mainServiceService.findByName(mainServiceName);
+        List<SubService> subServicesByMainService = subServiceRepository.findSubServicesByMainService(mainService);
+        if (subServicesByMainService.isEmpty())
+            throw new SubServiceException("Main-Service ("+mainServiceName+") has no any sub-service.");
+        return subServicesByMainService;
     }
 }
