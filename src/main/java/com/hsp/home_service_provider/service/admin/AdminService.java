@@ -11,6 +11,7 @@ import com.hsp.home_service_provider.service.subservice.SubServiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +41,10 @@ public class AdminService {
     @Transactional
     public void deleteMainService(String mainServiceName){
         mainServiceService.delete(mainServiceName);
+    }
+
+    public List<MainService> showAllMainService(){
+        return mainServiceService.showAll();
     }
 
 
