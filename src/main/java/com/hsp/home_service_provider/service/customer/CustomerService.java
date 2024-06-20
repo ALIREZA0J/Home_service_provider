@@ -2,6 +2,7 @@ package com.hsp.home_service_provider.service.customer;
 
 import com.hsp.home_service_provider.exception.CustomerException;
 import com.hsp.home_service_provider.exception.DuplicateException;
+import com.hsp.home_service_provider.exception.NotFoundException;
 import com.hsp.home_service_provider.exception.NotValidException;
 import com.hsp.home_service_provider.model.Customer;
 import com.hsp.home_service_provider.repository.customer.CustomerRepository;
@@ -34,4 +35,8 @@ public class CustomerService {
                 .orElseThrow(() -> new CustomerException("Gmail or password is wrong."));
     }
 
+    public Customer findById(Long id){
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Customer with (id:" + id + ") not found."));
+    }
 }
