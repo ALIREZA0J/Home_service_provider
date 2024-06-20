@@ -2,6 +2,7 @@ package com.hsp.home_service_provider.model;
 
 import com.hsp.home_service_provider.model.enums.City;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class Address {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToMany(mappedBy = "address",cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    @OneToMany(mappedBy = "address",cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     private List<Order> orders;
 
     @Override
