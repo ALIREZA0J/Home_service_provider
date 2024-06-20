@@ -27,4 +27,8 @@ public class Validation <T extends Person>{
             return false;
         }
     }
+
+    public boolean checkPositiveNumber(Long number){
+        return number > 0;
+    }
 }
