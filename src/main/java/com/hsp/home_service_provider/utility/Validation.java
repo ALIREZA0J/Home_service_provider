@@ -1,12 +1,16 @@
 package com.hsp.home_service_provider.utility;
 
+import com.hsp.home_service_provider.exception.DescriptionException;
+import com.hsp.home_service_provider.exception.ProposedPriceException;
 import com.hsp.home_service_provider.model.Person;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 @Component
 public class Validation <T extends Person>{
@@ -30,5 +34,26 @@ public class Validation <T extends Person>{
 
     public boolean checkPositiveNumber(Long number){
         return number > 0;
+    }
+
+    public boolean checkProposedDateNotBeforeToday(LocalDate time){
+        return time.isBefore(LocalDate.now());
+    }
+
+    public void checkDescriptionNotBlank(String str){
+        if (str.isBlank()) {
+            throw new DescriptionException("Description is blank.");
+        }
+    }
+
+    public void checkDescriptionPattern(String str){
+        String regex = "^[A-Za-z\\s]+$";
+        if (!Pattern.matches(regex, str)) {
+            throw new DescriptionException("You can't use number.");
+        }
+    }
+    public void checkProposedPriceNotLessThanSubService(Long pPrice, Long sPrice){
+        if (pPrice<sPrice)
+            throw new ProposedPriceException("Proposed Price is less than sub-service price.");
     }
 }
