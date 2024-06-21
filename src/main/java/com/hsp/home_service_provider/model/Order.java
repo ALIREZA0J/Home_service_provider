@@ -25,7 +25,6 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Pattern(regexp = "^[A-Za-z\\s]+$",message = "description most consist of letter only.")
     @Column(name = "description")
     private String description;
 
