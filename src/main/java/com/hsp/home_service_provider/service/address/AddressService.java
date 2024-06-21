@@ -17,21 +17,18 @@ import java.util.List;
 public class AddressService {
 
     private final AddressRepository addressRepository;
-    private final CustomerService customerService;
     private final Validation validation;
-    public Address register(Address address,Long customerId){
-        Customer customer = customerService.findById(customerId);
-        if (validation.checkPositiveNumber(address.getPlaque().longValue()))
+
+    public Address register(Address address){
+        if (!validation.checkPositiveNumber(address.getPlaque().longValue()))
             throw new AddressException("plaque couldn't be negative.");
-        address.setCustomer(customer);
         return addressRepository.save(address);
     }
 
-    public List<Address> findAddressesByCustomer(Long customerId){
-        Customer customer = customerService.findById(customerId);
+    public List<Address> findAddressesByCustomer(Customer customer){
         List<Address> addressesOfCustomer = addressRepository.findAddressesByCustomer(customer);
         if (addressesOfCustomer.isEmpty())
-            throw new NotFoundException("Customer with (id:"+customerId+") has no any addresses.");
+            throw new NotFoundException("Customer with (id:"+customer.getId()+") has no any addresses.");
         return addressesOfCustomer;
     }
 
