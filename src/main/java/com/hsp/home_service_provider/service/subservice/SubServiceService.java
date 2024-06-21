@@ -25,6 +25,8 @@ public class SubServiceService {
     public SubService register(SubService subService){
         if (subServiceRepository.findSubServiceByName(subService.getName()).isPresent())
             throw new DuplicateException("Sub-Service with name: " + subService.getName() + " is already exist.");
+        if (subService.getBasePrice()<300_000)
+            throw new SubServiceException("The minimum sub-service price is 300,000");
         return subServiceRepository.save(subService);
     }
 
