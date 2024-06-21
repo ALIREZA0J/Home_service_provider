@@ -35,7 +35,7 @@ public class Address {
     @Column(name = "plaque_namber")
     private Integer plaque;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
