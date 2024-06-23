@@ -1,13 +1,16 @@
 package com.hsp.home_service_provider.utility;
 
 import com.hsp.home_service_provider.exception.DescriptionException;
+import com.hsp.home_service_provider.exception.NotValidException;
 import com.hsp.home_service_provider.exception.ProposedPriceException;
+import com.hsp.home_service_provider.exception.SpecialistException;
+import com.hsp.home_service_provider.model.Avatar;
 import com.hsp.home_service_provider.model.Person;
+import com.hsp.home_service_provider.model.enums.SpecialistStatus;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -18,17 +21,15 @@ public class Validation <T extends Person>{
      Validator validator = validatorFactory.getValidator();
 
 
-    public boolean validate(T entity) {
+    public void validate(T entity) {
 
         Set<ConstraintViolation<T>> violations = validator.validate(entity);
-        if (violations.isEmpty())
-            return true;
-        else {
+        if (!violations.isEmpty()) {
             System.out.println("Invalid user data found:");
             for (ConstraintViolation<T> violation : violations) {
                 System.out.println(violation.getMessage());
             }
-            return false;
+            throw new NotValidException("Data Not valid");
         }
     }
 
@@ -55,5 +56,10 @@ public class Validation <T extends Person>{
     public void checkProposedPriceNotLessThanSubService(Long pPrice, Long sPrice){
         if (pPrice<sPrice)
             throw new ProposedPriceException("Proposed Price is less than sub-service price.");
+    }
+
+    public void checkSpecialistStatusIfItWasOtherThanAcceptedThrowException(SpecialistStatus specialistStatus){
+        if (!specialistStatus.equals(SpecialistStatus.ACCEPTED))
+            throw new SpecialistException("Specialist status is not accepted");
     }
 }
