@@ -27,8 +27,7 @@ public class CustomerService {
 
 
     public Customer register(Customer customer){
-        if (!validation.validate(customer))
-            throw new NotValidException("Your data is not valid.");
+        validation.validate(customer);
         if (customerRepository.findCustomerByGmail(customer.getGmail()).isPresent())
             throw new DuplicateException("A customer with this gmail is already exist.");
         customer.setRegistrationDate(LocalDate.now());
