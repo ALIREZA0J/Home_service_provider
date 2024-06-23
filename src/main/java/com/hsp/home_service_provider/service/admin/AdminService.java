@@ -4,9 +4,11 @@ import com.hsp.home_service_provider.exception.AdminException;
 import com.hsp.home_service_provider.exception.MismatchException;
 import com.hsp.home_service_provider.model.Admin;
 import com.hsp.home_service_provider.model.MainService;
+import com.hsp.home_service_provider.model.Specialist;
 import com.hsp.home_service_provider.model.SubService;
 import com.hsp.home_service_provider.repository.admin.AdminRepository;
 import com.hsp.home_service_provider.service.mainservice.MainServiceService;
+import com.hsp.home_service_provider.service.specialist.SpecialistService;
 import com.hsp.home_service_provider.service.subservice.SubServiceService;
 import com.hsp.home_service_provider.utility.Validation;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ public class AdminService {
     private final AdminRepository adminRepository;
     private final MainServiceService mainServiceService;
     private final SubServiceService subServiceService;
+    private final SpecialistService specialistService;
 
     private final Validation validation;
 
@@ -69,5 +72,17 @@ public class AdminService {
 
     public List<SubService> displaySubServiceOfMainService(String mainServiceName){
         return subServiceService.findSubServicesOfMainService(mainServiceName);
+    }
+
+    public void addSpecialistToSubService(String subServiceName, String specialistGmail){
+        SubService subService = subServiceService.findByName(subServiceName);
+        Specialist specialist = specialistService.findByGmail(specialistGmail);
+        subServiceService.addSpecialistToSubService(subService,specialist);
+    }
+
+    public void removeSpecialistFromSubService(String subServiceName, String specialistGmail){
+        SubService subService = subServiceService.findByName(subServiceName);
+        Specialist specialist = specialistService.findByGmail(specialistGmail);
+        subServiceService.removeSpecialistFromSubService(subService,specialist);
     }
 }
