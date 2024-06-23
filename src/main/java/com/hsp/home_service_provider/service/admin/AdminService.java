@@ -8,6 +8,7 @@ import com.hsp.home_service_provider.model.SubService;
 import com.hsp.home_service_provider.repository.admin.AdminRepository;
 import com.hsp.home_service_provider.service.mainservice.MainServiceService;
 import com.hsp.home_service_provider.service.subservice.SubServiceService;
+import com.hsp.home_service_provider.utility.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,8 @@ public class AdminService {
     private final MainServiceService mainServiceService;
     private final SubServiceService subServiceService;
 
+    private final Validation validation;
+
     public Admin logIn(String gmail , String password){
         return adminRepository.findAdminByGmailAndPassword(gmail, password)
                 .orElseThrow(() -> new AdminException("Gmail or Password is wrong."));
@@ -31,6 +34,7 @@ public class AdminService {
         if (!password1.equals(password2))
             throw new MismatchException("Password and repeat password do not match");
         admin.setPassword(password1);
+        validation.validate(admin);
         adminRepository.save(admin);
     }
 
