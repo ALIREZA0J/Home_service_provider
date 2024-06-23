@@ -30,7 +30,7 @@ public class Person {
     @Column(name = "first_name")
     private String firstName;
 
-    @Pattern(regexp = "^[A-Za-z\\s]+$",message = "First name most consist of letter only.")
+    @Pattern(regexp = "^[A-Za-z\\s]+$",message = "Last name most consist of letter only.")
     @Size(min = 3,max = 60,message = "At least three characters must be written for the name")
     @Column(name = "last_name")
     private String lastName;
