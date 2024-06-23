@@ -35,11 +35,11 @@ public class Specialist extends Person{
             cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     private Set<SubService> subServices;
 
-    @OneToOne(mappedBy = "specialist" , cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "specialist",cascade = {CascadeType.REMOVE,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     private Avatar avatar;
 
     @OneToMany(mappedBy = "specialist",
-            cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+            cascade = {CascadeType.REMOVE,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     private List<Offer> offers;
 
     @Override
