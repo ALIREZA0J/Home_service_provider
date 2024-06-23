@@ -49,11 +49,13 @@ public class SpecialistService {
         specialistRepository.save(specialist);
     }
 
+    @Transactional
     public Specialist findByGmail(String gmail){
         return specialistRepository.findSpecialistByGmail(gmail)
                 .orElseThrow(() -> new NotFoundException("Specialist with (gmail:" + gmail + ") not found."));
     }
 
+    @Transactional
     public void changeSpecialistStatusToAccept(String gmail){
         Specialist specialist = findByGmail(gmail);
         specialist.setSpecialistStatus(SpecialistStatus.ACCEPTED);
