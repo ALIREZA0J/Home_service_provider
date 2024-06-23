@@ -7,6 +7,7 @@ import com.hsp.home_service_provider.exception.ImageInputStreamException;
 import com.hsp.home_service_provider.model.Avatar;
 import com.hsp.home_service_provider.model.Specialist;
 import com.hsp.home_service_provider.model.enums.AvatarStatus;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
@@ -65,7 +66,6 @@ public class AvatarUtil {
                     " It should be JPG or JPEG.");
 
         return reader.getFormatName();
-
     }
 
     public static void saveImageOnLocalSystem(Avatar avatar) throws IOException {
@@ -84,9 +84,19 @@ public class AvatarUtil {
         return Avatar.builder()
                 .setAvatarData(imageData)
                 .setType(fileFormat)
-                .setSpecialist(specialist)
                 .setName(specialist.getGmail())
+                .setSpecialist(specialist)
                 .setAvatarStatus(AvatarStatus.NOT_SAVED_IN_FILE)
                 .build();
+    }
+
+    @SneakyThrows
+    public static Avatar checkPhotoFileAndMakeAvatarForSpecialist(String path, Specialist specialist) {
+        File file = new File(path);
+        checkFileExist(file);
+        checkTheSizeOfTheFile(file);
+        byte[] imageData = readPhoto(file);
+        String fileFormat = imageFormatReader(file);
+        return getAvatar(specialist, fileFormat, imageData);
     }
 }
