@@ -4,13 +4,13 @@ import com.hsp.home_service_provider.exception.DescriptionException;
 import com.hsp.home_service_provider.exception.NotValidException;
 import com.hsp.home_service_provider.exception.ProposedPriceException;
 import com.hsp.home_service_provider.exception.SpecialistException;
-import com.hsp.home_service_provider.model.Avatar;
 import com.hsp.home_service_provider.model.Person;
 import com.hsp.home_service_provider.model.enums.SpecialistStatus;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.springframework.stereotype.Component;
+
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -54,6 +54,8 @@ public class Validation <T extends Person>{
         }
     }
     public void checkProposedPriceNotLessThanSubService(Long pPrice, Long sPrice){
+        if (pPrice == null)
+            return;
         if (pPrice<sPrice)
             throw new ProposedPriceException("Proposed Price is less than sub-service price.");
     }
