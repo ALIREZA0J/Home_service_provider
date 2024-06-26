@@ -1,7 +1,6 @@
 package com.hsp.home_service_provider.service.admin;
 
 import com.hsp.home_service_provider.exception.AdminException;
-import com.hsp.home_service_provider.exception.MismatchException;
 import com.hsp.home_service_provider.model.Admin;
 import com.hsp.home_service_provider.model.MainService;
 import com.hsp.home_service_provider.model.Specialist;
@@ -14,6 +13,7 @@ import com.hsp.home_service_provider.utility.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -31,15 +31,6 @@ public class AdminService {
                 .orElseThrow(() -> new AdminException("Gmail or Password is wrong."));
     }
 
-    public void changePassword(Long adminId,String password1,String password2){
-        Admin admin = adminRepository.findById(adminId)
-                .orElseThrow(() -> new AdminException("Admin with id:" + adminId + " not found."));
-        if (!password1.equals(password2))
-            throw new MismatchException("Password and repeat password do not match");
-        admin.setPassword(password1);
-        validation.validate(admin);
-        adminRepository.save(admin);
-    }
 
     public MainService registerMainService(MainService mainService){
         return mainServiceService.register(mainService);
