@@ -20,7 +20,7 @@ public class SpecialistService {
     private final SpecialistRepository specialistRepository;
     private final Validation validation;
 
-
+    @Transactional
     public Specialist register(Specialist specialist, String photoPath)  {
         validation.validate(specialist);
         if (specialistRepository.findSpecialistByGmail(specialist.getGmail()).isPresent())
@@ -61,4 +61,6 @@ public class SpecialistService {
         specialist.setSpecialistStatus(SpecialistStatus.ACCEPTED);
         specialistRepository.save(specialist);
     }
+
+
 }
