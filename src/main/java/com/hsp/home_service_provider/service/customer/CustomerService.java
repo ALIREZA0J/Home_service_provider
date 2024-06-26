@@ -54,8 +54,6 @@ public class CustomerService {
         Customer customer = findById(customerId);
         SubService subService = subServiceService.findByName(subServiceName);
         Address address = addressService.findById(addressId);
-        if (!address.getCustomer().equals(customer))
-            throw new MismatchException("The owner of the address is not the same as the owner of the order");
         validation.checkProposedPriceNotLessThanSubService(order.getProposedPrice(), subService.getBasePrice());
         if (order.getProposedPrice() == null)
             order.setProposedPrice(subService.getBasePrice());
