@@ -38,6 +38,7 @@ public class AdminController {
         adminService.deleteMainService(mainServiceId);
         return "Message: { main-service with (id="+mainServiceId+") deleted successfully.}";
     }
+
     @GetMapping("/display-Main-Services")
     public ResponseEntity<List<MainServiceResponse>> displayAllMainService(){
         List<MainService> mainServices = adminService.displayAllMainService();
@@ -62,9 +63,20 @@ public class AdminController {
         SubService updateSubService = adminService.updateSubService(subService);
         return new ResponseEntity<>(SubServiceMapper.INSTANCE.subServiceModelToSubServiceResponse(updateSubService), HttpStatus.OK);
     }
+
     @DeleteMapping("/delete-Sub_service")
     public String deleteSubService(@RequestParam String subServiceName){
         adminService.deleteSubService(subServiceName);
         return "Message: { Sub-Service ("+subServiceName+") deleted successfully. }";
+    }
+
+    @GetMapping("/display-SubServices-of-MainService")
+    public ResponseEntity<List<SubServiceResponse>> displaySubServiceOfMainService(@RequestParam String mainServiceName){
+        List<SubService> subServices = adminService.displaySubServiceOfMainService(mainServiceName);
+        List<SubServiceResponse> subServiceResponses = new ArrayList<>();
+        for (SubService subService : subServices) {
+            subServiceResponses.add(SubServiceMapper.INSTANCE.subServiceModelToSubServiceResponse(subService));
+        }
+        return new ResponseEntity<>(subServiceResponses,HttpStatus.OK);
     }
 }
