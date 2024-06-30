@@ -59,6 +59,7 @@ public class AdminService {
     }
 
 
+    @Transactional
     public List<SubService> displaySubServiceOfMainService(String mainServiceName){
         return subServiceService.findSubServicesOfMainService(mainServiceName);
     }
