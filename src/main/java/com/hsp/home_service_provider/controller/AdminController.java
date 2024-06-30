@@ -9,10 +9,7 @@ import com.hsp.home_service_provider.service.admin.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,5 +25,9 @@ public class AdminController {
                 (MainServiceMapper.INSTANCE.mainServiceModelToResponse(registerMainService), HttpStatus.CREATED);
     }
 
-
+    @DeleteMapping("/delete-Main_Service")
+    public String deleteMainService(@RequestParam Long mainServiceId){
+        adminService.deleteMainService(mainServiceId);
+        return "Message: { main-service with (id="+mainServiceId+") deleted successfully.}";
+    }
 }
