@@ -24,8 +24,8 @@ public class MainServiceService {
     }
 
     @Transactional
-    public void delete(String serviceName){
-        MainService mainService = findByName(serviceName);
+    public void delete(Long id){
+        MainService mainService = findById(id);
         mainServiceRepository.delete(mainService);
     }
 
