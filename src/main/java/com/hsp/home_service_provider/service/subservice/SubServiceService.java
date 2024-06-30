@@ -9,6 +9,7 @@ import com.hsp.home_service_provider.model.Specialist;
 import com.hsp.home_service_provider.model.SubService;
 import com.hsp.home_service_provider.repository.subservice.SubServiceRepository;
 import com.hsp.home_service_provider.service.mainservice.MainServiceService;
+import com.hsp.home_service_provider.utility.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,7 @@ public class SubServiceService {
 
     private final SubServiceRepository subServiceRepository;
     private final MainServiceService mainServiceService;
-
+    private final Validation validation;
 
 
     public SubService register(SubService subService){
@@ -29,6 +30,7 @@ public class SubServiceService {
             throw new DuplicateException("Sub-Service with name: " + subService.getName() + " is already exist.");
         if (subService.getBasePrice()<300_000)
             throw new SubServiceException("The minimum sub-service price is 300,000");
+        validation.checkSubServiceNamePattern(subService.getName());
         return subServiceRepository.save(subService);
     }
 
