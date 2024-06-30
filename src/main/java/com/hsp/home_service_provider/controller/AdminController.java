@@ -15,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
@@ -33,6 +36,15 @@ public class AdminController {
     public String deleteMainService(@RequestParam Long mainServiceId){
         adminService.deleteMainService(mainServiceId);
         return "Message: { main-service with (id="+mainServiceId+") deleted successfully.}";
+    }
+    @GetMapping("/display-Main-Services")
+    public ResponseEntity<List<MainServiceResponse>> displayAllMainService(){
+        List<MainService> mainServices = adminService.displayAllMainService();
+        List<MainServiceResponse> mainServiceResponses = new ArrayList<>();
+        for (MainService mainService : mainServices) {
+            mainServiceResponses.add(MainServiceMapper.INSTANCE.mainServiceModelToResponse(mainService));
+        }
+        return new ResponseEntity<>(mainServiceResponses,HttpStatus.OK);
     }
 
     @PostMapping("/register-Sub_service")
