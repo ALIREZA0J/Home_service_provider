@@ -35,7 +35,8 @@ public class Specialist extends Person{
             cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     private Set<SubService> subServices;
 
-    @OneToOne(mappedBy = "specialist",cascade = {CascadeType.REMOVE,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    @OneToOne(mappedBy = "specialist", fetch = FetchType.LAZY,
+            cascade = {CascadeType.REMOVE,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     private Avatar avatar;
 
     @OneToMany(mappedBy = "specialist",
