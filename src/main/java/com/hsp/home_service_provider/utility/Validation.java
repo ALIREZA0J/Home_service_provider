@@ -1,9 +1,6 @@
 package com.hsp.home_service_provider.utility;
 
-import com.hsp.home_service_provider.exception.DescriptionException;
-import com.hsp.home_service_provider.exception.NotValidException;
-import com.hsp.home_service_provider.exception.ProposedPriceException;
-import com.hsp.home_service_provider.exception.SpecialistException;
+import com.hsp.home_service_provider.exception.*;
 import com.hsp.home_service_provider.model.Person;
 import com.hsp.home_service_provider.model.enums.SpecialistStatus;
 import jakarta.validation.ConstraintViolation;
@@ -51,6 +48,12 @@ public class Validation <T extends Person>{
         String regex = "^[A-Za-z\\s]+$";
         if (!Pattern.matches(regex, str)) {
             throw new DescriptionException("You can't use number.");
+        }
+    }
+    public void checkSubServiceNamePattern(String str){
+        String regex = "^[A-Za-z\\s]+$";
+        if (!Pattern.matches(regex, str)) {
+            throw new SubServiceException("You can't use number.");
         }
     }
     public void checkProposedPriceNotLessThanSubService(Long pPrice, Long sPrice){
