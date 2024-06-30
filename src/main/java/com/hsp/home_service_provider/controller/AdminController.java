@@ -62,4 +62,9 @@ public class AdminController {
         SubService updateSubService = adminService.updateSubService(subService);
         return new ResponseEntity<>(SubServiceMapper.INSTANCE.subServiceModelToSubServiceResponse(updateSubService), HttpStatus.OK);
     }
+    @DeleteMapping("/delete-Sub_service")
+    public String deleteSubService(@RequestParam String subServiceName){
+        adminService.deleteSubService(subServiceName);
+        return "Message: { Sub-Service ("+subServiceName+") deleted successfully. }";
+    }
 }
