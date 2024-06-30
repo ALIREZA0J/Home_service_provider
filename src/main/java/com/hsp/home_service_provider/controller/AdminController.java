@@ -5,6 +5,7 @@ import com.hsp.home_service_provider.dto.main_service.MainServiceResponse;
 import com.hsp.home_service_provider.dto.main_service.MainServiceSaveRequest;
 import com.hsp.home_service_provider.dto.sub_service.SubServiceResponse;
 import com.hsp.home_service_provider.dto.sub_service.SubServiceSaveRequest;
+import com.hsp.home_service_provider.dto.sub_service.SubServiceUpdateRequest;
 import com.hsp.home_service_provider.mapper.MainServiceMapper;
 import com.hsp.home_service_provider.mapper.SubServiceMapper;
 import com.hsp.home_service_provider.model.MainService;
@@ -48,10 +49,17 @@ public class AdminController {
     }
 
     @PostMapping("/register-Sub_service")
-    public ResponseEntity<SubServiceResponse> registerSbuService(@RequestBody SubServiceSaveRequest request){
+    public ResponseEntity<SubServiceResponse> registerSubService(@RequestBody SubServiceSaveRequest request){
         SubService subService = SubServiceMapper.INSTANCE.subServiceSaveRequestToModel(request);
         SubService registerSubService = adminService
                 .registerSubService(subService, subService.getMainService().getServiceName());
         return new ResponseEntity<>(SubServiceMapper.INSTANCE.subServiceModelToSubServiceResponse(registerSubService),HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update-Sub-Service")
+    public ResponseEntity<SubServiceResponse> updateSubService(@RequestBody SubServiceUpdateRequest request){
+        SubService subService = SubServiceMapper.INSTANCE.subServiceUpdateRequestToModel(request);
+        SubService updateSubService = adminService.updateSubService(subService);
+        return new ResponseEntity<>(SubServiceMapper.INSTANCE.subServiceModelToSubServiceResponse(updateSubService), HttpStatus.OK);
     }
 }
