@@ -9,7 +9,6 @@ import com.hsp.home_service_provider.repository.admin.AdminRepository;
 import com.hsp.home_service_provider.service.mainservice.MainServiceService;
 import com.hsp.home_service_provider.service.specialist.SpecialistService;
 import com.hsp.home_service_provider.service.subservice.SubServiceService;
-import com.hsp.home_service_provider.utility.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +23,6 @@ public class AdminService {
     private final SubServiceService subServiceService;
     private final SpecialistService specialistService;
 
-    private final Validation validation;
 
     public Admin logIn(String gmail , String password){
         return adminRepository.findAdminByGmailAndPassword(gmail, password)
@@ -37,8 +35,8 @@ public class AdminService {
     }
 
     @Transactional
-    public void deleteMainService(String mainServiceName){
-        mainServiceService.delete(mainServiceName);
+    public void deleteMainService(Long mainServiceId){
+        mainServiceService.delete(mainServiceId);
     }
 
     public List<MainService> displayAllMainService(){
