@@ -67,16 +67,14 @@ public class CustomerService {
         return addressService.register(address);
     }
 
-    public Order registerNewOrder(Order order,Long customerId,String subServiceName,Long addressId){
-        Customer customer = findById(customerId);
-        SubService subService = subServiceService.findByName(subServiceName);
-        Address address = addressService.findById(addressId);
+    public Order registerNewOrder(Order order){
+        SubService subService = subServiceService.findByName(order.getSubService().getName());
         validation.checkProposedPriceNotLessThanSubService(order.getProposedPrice(), subService.getBasePrice());
         if (order.getProposedPrice() == null)
             order.setProposedPrice(subService.getBasePrice());
-        order.setCustomer(customer);
+        order.setCustomer(findByGmail(order.getCustomer().getGmail()));
         order.setSubService(subService);
-        order.setAddress(address);
+        order.setAddress(addressService.findById(order.getAddress().getId()));
         return orderService.register(order);
     }
 }
