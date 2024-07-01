@@ -45,8 +45,13 @@ public class CustomerService {
                 .orElseThrow(() -> new NotFoundException("Customer with (id:" + id + ") not found."));
     }
 
-    public Address registerNewAddress(Address address, Long customerId){
-        Customer customer = findById(customerId);
+    public Customer findByGmail(String gmail){
+        return customerRepository.findCustomerByGmail(gmail)
+                .orElseThrow(() -> new NotFoundException("Customer with (gmail:" + gmail + ") not found."));
+    }
+
+    public Address registerNewAddress(Address address, String gmail){
+        Customer customer = findByGmail(gmail);
         address.setCustomer(customer);
         return addressService.register(address);
     }
