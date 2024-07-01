@@ -12,6 +12,7 @@ import com.hsp.home_service_provider.service.subservice.SubServiceService;
 import com.hsp.home_service_provider.utility.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -35,6 +36,16 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
+    @Transactional
+    public Customer changePassword(String gmail, String password1,String password2){
+        Customer customer = findByGmail(gmail);
+        if (!password1.equals(password2))
+            throw new MismatchException("Password and repeat password do not match");
+        customer.setPassword(password2);
+        validation.validate(customer);
+        return customerRepository.save(customer);
+    }
+
     public Customer logIn(String gmail , String password){
         return customerRepository.findCustomerByGmailAndPassword(gmail, password)
                 .orElseThrow(() -> new CustomerException("Gmail or password is wrong."));
@@ -55,6 +66,7 @@ public class CustomerService {
         address.setCustomer(customer);
         return addressService.register(address);
     }
+
     public Order registerNewOrder(Order order,Long customerId,String subServiceName,Long addressId){
         Customer customer = findById(customerId);
         SubService subService = subServiceService.findByName(subServiceName);
