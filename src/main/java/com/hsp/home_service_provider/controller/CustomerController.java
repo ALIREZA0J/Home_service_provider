@@ -6,10 +6,14 @@ import com.hsp.home_service_provider.dto.address.AddressSaveRequest;
 import com.hsp.home_service_provider.dto.customer.CustomerChangePasswordRequest;
 import com.hsp.home_service_provider.dto.customer.CustomerResponse;
 import com.hsp.home_service_provider.dto.customer.CustomerSaveRequest;
+import com.hsp.home_service_provider.dto.order.OrderResponse;
+import com.hsp.home_service_provider.dto.order.OrderSaveRequest;
 import com.hsp.home_service_provider.mapper.AddressMapper;
 import com.hsp.home_service_provider.mapper.CustomerMapper;
+import com.hsp.home_service_provider.mapper.OrderMapper;
 import com.hsp.home_service_provider.model.Address;
 import com.hsp.home_service_provider.model.Customer;
+import com.hsp.home_service_provider.model.Order;
 import com.hsp.home_service_provider.service.customer.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,5 +48,12 @@ public class CustomerController {
         Address registerNewAddress = customerService.registerNewAddress(address, request.customer().gmail());
         return new ResponseEntity<>
                 (AddressMapper.INSTANCE.addressModelToAddressResponse(registerNewAddress), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/register-new-order")
+    public ResponseEntity<OrderResponse> registerNewOrder(@RequestBody OrderSaveRequest request){
+        Order order = OrderMapper.INSTANCE.orderSaveRequestToModel(request);
+        Order registerNewOrder = customerService.registerNewOrder(order);
+        return new ResponseEntity<>(OrderMapper.INSTANCE.modelToOrderResponse(registerNewOrder),HttpStatus.CREATED);
     }
 }
