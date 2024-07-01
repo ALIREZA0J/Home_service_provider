@@ -3,12 +3,15 @@ package com.hsp.home_service_provider.controller;
 
 import com.hsp.home_service_provider.dto.main_service.MainServiceResponse;
 import com.hsp.home_service_provider.dto.main_service.MainServiceSaveRequest;
+import com.hsp.home_service_provider.dto.specialist.SpecialistResponse;
 import com.hsp.home_service_provider.dto.sub_service.SubServiceResponse;
 import com.hsp.home_service_provider.dto.sub_service.SubServiceSaveRequest;
 import com.hsp.home_service_provider.dto.sub_service.SubServiceUpdateRequest;
 import com.hsp.home_service_provider.mapper.MainServiceMapper;
+import com.hsp.home_service_provider.mapper.SpecialistMapper;
 import com.hsp.home_service_provider.mapper.SubServiceMapper;
 import com.hsp.home_service_provider.model.MainService;
+import com.hsp.home_service_provider.model.Specialist;
 import com.hsp.home_service_provider.model.SubService;
 import com.hsp.home_service_provider.service.admin.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -78,5 +81,12 @@ public class AdminController {
             subServiceResponses.add(SubServiceMapper.INSTANCE.subServiceModelToSubServiceResponse(subService));
         }
         return new ResponseEntity<>(subServiceResponses,HttpStatus.OK);
+    }
+
+    @PutMapping("/change-status-of-specialist")
+    public ResponseEntity<SpecialistResponse> changeSpecialistStatusToAccept(@RequestParam String gmail){
+        Specialist specialist = adminService.changeSpecialistStatusToAccept(gmail);
+        return new ResponseEntity<>
+                (SpecialistMapper.INSTANCE.specialistModelToSpecialistResponse(specialist),HttpStatus.OK);
     }
 }
