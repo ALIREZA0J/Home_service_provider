@@ -1,9 +1,13 @@
 package com.hsp.home_service_provider.controller;
 
 
+import com.hsp.home_service_provider.dto.address.AddressResponse;
+import com.hsp.home_service_provider.dto.address.AddressSaveRequest;
 import com.hsp.home_service_provider.dto.customer.CustomerResponse;
 import com.hsp.home_service_provider.dto.customer.CustomerSaveRequest;
+import com.hsp.home_service_provider.mapper.AddressMapper;
 import com.hsp.home_service_provider.mapper.CustomerMapper;
+import com.hsp.home_service_provider.model.Address;
 import com.hsp.home_service_provider.model.Customer;
 import com.hsp.home_service_provider.service.customer.CustomerService;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +31,13 @@ public class CustomerController {
         Customer registerCustomer = customerService.register(customer);
         return new ResponseEntity<>
                 (CustomerMapper.INSTANCE.customerModelToCustomerResponse(registerCustomer), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/register-new-address")
+    public ResponseEntity<AddressResponse> registerNewAddress(@RequestBody AddressSaveRequest request){
+        Address address = AddressMapper.INSTANCE.addressSaveRequestToModel(request);
+        Address registerNewAddress = customerService.registerNewAddress(address, request.customer().gmail());
+        return new ResponseEntity<>
+                (AddressMapper.INSTANCE.addressModelToAddressResponse(registerNewAddress), HttpStatus.CREATED);
     }
 }
