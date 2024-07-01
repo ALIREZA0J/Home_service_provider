@@ -56,10 +56,10 @@ public class SpecialistService {
     }
 
     @Transactional
-    public void changeSpecialistStatusToAccept(String gmail){
+    public Specialist changeSpecialistStatusToAccept(String gmail){
         Specialist specialist = findByGmail(gmail);
         specialist.setSpecialistStatus(SpecialistStatus.ACCEPTED);
-        specialistRepository.save(specialist);
+        return specialistRepository.save(specialist);
     }
 
 
