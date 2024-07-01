@@ -64,6 +64,10 @@ public class AdminService {
         return subServiceService.findSubServicesOfMainService(mainServiceName);
     }
 
+    public Specialist changeSpecialistStatusToAccept(String gmail){
+        return specialistService.changeSpecialistStatusToAccept(gmail);
+    }
+
     public void addSpecialistToSubService(String subServiceName, String specialistGmail){
         SubService subService = subServiceService.findByName(subServiceName);
         Specialist specialist = specialistService.findByGmail(specialistGmail);
