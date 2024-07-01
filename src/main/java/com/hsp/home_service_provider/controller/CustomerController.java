@@ -3,6 +3,7 @@ package com.hsp.home_service_provider.controller;
 
 import com.hsp.home_service_provider.dto.address.AddressResponse;
 import com.hsp.home_service_provider.dto.address.AddressSaveRequest;
+import com.hsp.home_service_provider.dto.customer.CustomerChangePasswordRequest;
 import com.hsp.home_service_provider.dto.customer.CustomerResponse;
 import com.hsp.home_service_provider.dto.customer.CustomerSaveRequest;
 import com.hsp.home_service_provider.mapper.AddressMapper;
@@ -13,10 +14,7 @@ import com.hsp.home_service_provider.service.customer.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +29,13 @@ public class CustomerController {
         Customer registerCustomer = customerService.register(customer);
         return new ResponseEntity<>
                 (CustomerMapper.INSTANCE.customerModelToCustomerResponse(registerCustomer), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<CustomerResponse> changePassword(@RequestBody CustomerChangePasswordRequest request){
+        Customer customer = customerService.changePassword(request.gmail(), request.password1(), request.password2());
+        return new ResponseEntity<>
+                (CustomerMapper.INSTANCE.customerModelToCustomerResponse(customer), HttpStatus.OK);
     }
 
     @PostMapping("/register-new-address")
