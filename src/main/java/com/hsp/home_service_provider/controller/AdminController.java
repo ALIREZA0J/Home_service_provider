@@ -89,4 +89,18 @@ public class AdminController {
         return new ResponseEntity<>
                 (SpecialistMapper.INSTANCE.specialistModelToSpecialistResponse(specialist),HttpStatus.OK);
     }
+
+    @PostMapping("/add-specialist-to-sub-service")
+    public ResponseEntity<String> addSpecialistToSubService(@RequestBody SpecialistSubServiceRequest request){
+        adminService.addSpecialistToSubService(request.subServiceName(),request.specialistGmail());
+        return new ResponseEntity<>
+                ("The specialist with the desired email was added to the sub-service",HttpStatus.OK);
+    }
+
+    @DeleteMapping("/remove-specialist-to-sub-service")
+    public ResponseEntity<String> removeSpecialistFromSubService(@RequestBody SpecialistSubServiceRequest request){
+        adminService.removeSpecialistFromSubService(request.subServiceName(),request.specialistGmail());
+        return new ResponseEntity<>
+                ("The specialist with the desired email was removed from the sub-service",HttpStatus.OK);
+    }
 }
