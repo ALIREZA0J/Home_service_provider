@@ -1,9 +1,27 @@
 package com.hsp.home_service_provider.controller;
 
+import com.hsp.home_service_provider.dto.specialist.SpecialistResponse;
+import com.hsp.home_service_provider.dto.specialist.SpecialistSaveRequest;
+import com.hsp.home_service_provider.mapper.SpecialistMapper;
+import com.hsp.home_service_provider.model.Specialist;
+import com.hsp.home_service_provider.service.specialist.SpecialistService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/specialist")
 public class SpecialistController {
+    private final SpecialistService specialistService;
+
+    @PostMapping("/register")
+    public ResponseEntity<SpecialistResponse> register(@RequestBody SpecialistSaveRequest request,
+                                                       @RequestParam String photoPath){
+        Specialist specialist = SpecialistMapper.INSTANCE.specialistSaveRequestToModel(request);
+        Specialist registerSpecialist = specialistService.register(specialist, photoPath);
+        return new ResponseEntity<>
+                (SpecialistMapper.INSTANCE.specialistModelToSpecialistResponse(registerSpecialist), HttpStatus.CREATED);
+    }
 }
