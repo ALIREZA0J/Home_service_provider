@@ -3,11 +3,13 @@ package com.hsp.home_service_provider.service.order;
 import com.hsp.home_service_provider.exception.NotFoundException;
 import com.hsp.home_service_provider.exception.OrderException;
 import com.hsp.home_service_provider.model.Order;
+import com.hsp.home_service_provider.model.SubService;
 import com.hsp.home_service_provider.model.enums.OrderStatus;
 import com.hsp.home_service_provider.repository.order.OrderRepository;
 import com.hsp.home_service_provider.utility.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,15 @@ public class OrderService {
 
     public Order findById(Long id){
         return orderRepository.findById(id).orElseThrow(() -> new NotFoundException("Order with (id:"+id+") not found."));
+    }
+
+    public List<Order> findOrdersBySubServiceAndOrderStatus(SubService subService){
+        List<Order> ordersWaitingToSuggestion = orderRepository
+                .findOrdersBySubServiceAndOrderStatus(subService, OrderStatus.WAITING_FOR_THE_SUGGESTION_OF_SPECIALIST);
+        List<Order> ordersWaitingForSelection = orderRepository
+                .findOrdersBySubServiceAndOrderStatus(subService, OrderStatus.WAITING_FOR_SPECIALIST_SELECTION);
+        ordersWaitingToSuggestion.addAll(ordersWaitingForSelection);
+        return ordersWaitingToSuggestion;
     }
 
     public void changeStatusOfOrderToWaitingForSpecialistSelection(Long orderId){
