@@ -4,21 +4,28 @@ import com.hsp.home_service_provider.exception.MismatchException;
 import com.hsp.home_service_provider.exception.NotFoundException;
 import com.hsp.home_service_provider.exception.SpecialistException;
 import com.hsp.home_service_provider.model.Avatar;
+import com.hsp.home_service_provider.model.Order;
 import com.hsp.home_service_provider.model.Specialist;
+import com.hsp.home_service_provider.model.SubService;
 import com.hsp.home_service_provider.model.enums.SpecialistStatus;
 import com.hsp.home_service_provider.repository.specialist.SpecialistRepository;
+import com.hsp.home_service_provider.service.order.OrderService;
 import com.hsp.home_service_provider.utility.AvatarUtil;
 import com.hsp.home_service_provider.utility.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class SpecialistService {
 
     private final SpecialistRepository specialistRepository;
+    private final OrderService orderService;
     private final Validation validation;
 
     @Transactional
@@ -64,5 +71,16 @@ public class SpecialistService {
         return specialistRepository.save(specialist);
     }
 
+    @Transactional
+    public List<Order> displayOrdersRelatedToSpecialist(String gmail){
+        Specialist specialist = findByGmail(gmail);
+        ArrayList<Order> orders = new ArrayList<>();
+        Set<SubService> subServices = specialist.getSubServices();
+        for (int i = 0; i < subServices.size(); i++) {
+            List<Order> ordersFind = orderService.findOrdersBySubServiceAndOrderStatus(subServices.iterator().next());
+            orders.addAll(ordersFind);
+        }
+        return orders;
+    }
 
 }
