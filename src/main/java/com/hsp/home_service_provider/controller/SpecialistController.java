@@ -1,5 +1,6 @@
 package com.hsp.home_service_provider.controller;
 
+import com.hsp.home_service_provider.dto.specialist.SpecialistChangePasswordRequest;
 import com.hsp.home_service_provider.dto.specialist.SpecialistResponse;
 import com.hsp.home_service_provider.dto.specialist.SpecialistSaveRequest;
 import com.hsp.home_service_provider.mapper.SpecialistMapper;
@@ -23,5 +24,11 @@ public class SpecialistController {
         Specialist registerSpecialist = specialistService.register(specialist, photoPath);
         return new ResponseEntity<>
                 (SpecialistMapper.INSTANCE.specialistModelToSpecialistResponse(registerSpecialist), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<String> changePassword(@RequestBody SpecialistChangePasswordRequest request){
+        specialistService.changePassword(request.gmail(), request.password1(), request.password2());
+        return new ResponseEntity<>("Password change successfully.",HttpStatus.OK);
     }
 }
