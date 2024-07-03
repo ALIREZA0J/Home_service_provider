@@ -54,7 +54,7 @@ public class OfferService {
 
     public List<Offer> displayOffersOfOrderSortByPriceAndScore(Long orderId){
         Order order = orderService.findById(orderId);
-        List<Offer> offersOfOrderIsWaitingStatus = getOffersOfOrderIsWaitingStatus(order);
+        List<Offer> offersOfOrderIsWaitingStatus = findOffersOfOrderIsWaitingStatus(order);
         return offersOfOrderIsWaitingStatus.stream()
                 .sorted(Comparator.comparing(Offer::getOfferPrice))
                 .sorted(Comparator.comparing(o -> o.getSpecialist().getScore()))
@@ -72,7 +72,7 @@ public class OfferService {
     }
 
     public void rejectedOtherOfferForOrder(Order order){
-        List<Offer> offersOfOrderIsWaitingStatus = getOffersOfOrderIsWaitingStatus(order);
+        List<Offer> offersOfOrderIsWaitingStatus = findOffersOfOrderIsWaitingStatus(order);
         if (offersOfOrderIsWaitingStatus != null){
             for (Offer offer : offersOfOrderIsWaitingStatus) {
                 offer.setOfferStatus(OfferStatus.REJECTED);
@@ -81,9 +81,8 @@ public class OfferService {
         }
     }
 
-    private List<Offer> getOffersOfOrderIsWaitingStatus(Order order) {
-        return offerRepository
-                .findOffersByOrderAndOfferStatus(order, OfferStatus.WAITING);
+    public List<Offer> findOffersOfOrderIsWaitingStatus(Order order) {
+        return offerRepository.findOffersByOrderAndOfferStatus(order, OfferStatus.WAITING);
     }
 
 
