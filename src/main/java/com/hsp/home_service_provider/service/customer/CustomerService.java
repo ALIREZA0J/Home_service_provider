@@ -1,12 +1,13 @@
 package com.hsp.home_service_provider.service.customer;
 
-import com.hsp.home_service_provider.exception.*;
-import com.hsp.home_service_provider.model.Address;
-import com.hsp.home_service_provider.model.Customer;
-import com.hsp.home_service_provider.model.Order;
-import com.hsp.home_service_provider.model.SubService;
+import com.hsp.home_service_provider.exception.CustomerException;
+import com.hsp.home_service_provider.exception.DuplicateException;
+import com.hsp.home_service_provider.exception.MismatchException;
+import com.hsp.home_service_provider.exception.NotFoundException;
+import com.hsp.home_service_provider.model.*;
 import com.hsp.home_service_provider.repository.customer.CustomerRepository;
 import com.hsp.home_service_provider.service.address.AddressService;
+import com.hsp.home_service_provider.service.offer.OfferService;
 import com.hsp.home_service_provider.service.order.OrderService;
 import com.hsp.home_service_provider.service.subservice.SubServiceService;
 import com.hsp.home_service_provider.utility.Validation;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final OrderService orderService;
     private final AddressService addressService;
+    private final OfferService offerService;
     private final SubServiceService subServiceService;
     private final Validation validation;
 
@@ -76,5 +79,10 @@ public class CustomerService {
         order.setSubService(subService);
         order.setAddress(addressService.findById(order.getAddress().getId()));
         return orderService.register(order);
+    }
+
+    public List<Offer> displayOffersOfOrderInWaitingStatus(Long orderId){
+        Order order = orderService.findById(orderId);
+        return offerService.findOffersOfOrderIsWaitingStatus(order);
     }
 }
