@@ -2,6 +2,7 @@ package com.hsp.home_service_provider.service.order;
 
 import com.hsp.home_service_provider.exception.NotFoundException;
 import com.hsp.home_service_provider.exception.OrderException;
+import com.hsp.home_service_provider.model.Customer;
 import com.hsp.home_service_provider.model.Order;
 import com.hsp.home_service_provider.model.SubService;
 import com.hsp.home_service_provider.model.enums.OrderStatus;
@@ -69,5 +70,10 @@ public class OrderService {
         }
     }
 
+    public List<Order> findOrdersInWaitingForSpecialistComeToLocation(Customer customer){
+        return orderRepository
+                .findOrdersByCustomerAndOrderStatus
+                        (customer, OrderStatus.WAITING_FOR_THE_SPECIALIST_TO_COME_TO_YOUR_PLACE);
+    }
 
 }
