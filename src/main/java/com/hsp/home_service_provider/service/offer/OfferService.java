@@ -28,9 +28,9 @@ public class OfferService {
     private final SpecialistService specialistService;
     private final Validation validation;
 
-    public Offer register(Offer offer,Long specialistId,Long orderId){
-        Specialist specialist = specialistService.findById(specialistId);
-        Order order = orderService.findById(orderId);
+    public Offer register(Offer offer){
+        Specialist specialist = specialistService.findByGmail(offer.getSpecialist().getGmail());
+        Order order = orderService.findById(offer.getOrder().getId());
         if (!specialist.getSubServices().contains(order.getSubService()))
             throw new AbsenceException("Specialist sub-services do not include ordered sub-services");
         if (!(order.getOrderStatus().equals(OrderStatus.WAITING_FOR_THE_SUGGESTION_OF_SPECIALIST) ||
