@@ -96,4 +96,20 @@ public class CustomerController {
         return new ResponseEntity<>("Order with (id:"+orderId+") Started.",HttpStatus.OK);
     }
 
+    @GetMapping("/display-OrdersInStartedStatus")
+    public ResponseEntity<List<OrderOfCustomerResponse>> displayOrdersInStartedStatus(@RequestParam Long customerId){
+        List<Order> orders = customerService.displayOrdersStarted(customerId);
+        ArrayList<OrderOfCustomerResponse> orderOfCustomerResponses = new ArrayList<>();
+        for (Order order : orders) {
+            orderOfCustomerResponses.add(OrderMapper.INSTANCE.modelToOrderOfCustomerResponse(order));
+        }
+        return new ResponseEntity<>(orderOfCustomerResponses,HttpStatus.OK);
+    }
+
+    @PutMapping("/end-of-work-registration")
+    public ResponseEntity<String> endOfTimeRegistration(@RequestParam Long orderId){
+        customerService.endOfWorkRegistration(orderId);
+        return new ResponseEntity<>("Order with (id:"+orderId+") Done.",HttpStatus.OK);
+    }
+
 }
