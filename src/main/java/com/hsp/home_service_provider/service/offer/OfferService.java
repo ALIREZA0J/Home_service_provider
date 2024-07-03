@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -52,11 +53,11 @@ public class OfferService {
         return offerRepository.findById(id).orElseThrow(()-> new NotFoundException("Offer with (id:"+id+") not found."));
     }
 
-    public List<Offer> displayOffersOfOrderSortByPriceAndScore(Long orderId){
-        Order order = orderService.findById(orderId);
+    public List<Offer> displayOffersOfOrderSortByPriceAndScore(Order order){
         List<Offer> offersOfOrderIsWaitingStatus = findOffersOfOrderIsWaitingStatus(order);
-        return offersOfOrderIsWaitingStatus.stream()
-                .sorted(Comparator.comparing(Offer::getOfferPrice))
+        Stream<Offer> sortByOfferPrice = offersOfOrderIsWaitingStatus.stream()
+                .sorted(Comparator.comparing(Offer::getOfferPrice));
+        return sortByOfferPrice
                 .sorted(Comparator.comparing(o -> o.getSpecialist().getScore()))
                 .toList();
     }
