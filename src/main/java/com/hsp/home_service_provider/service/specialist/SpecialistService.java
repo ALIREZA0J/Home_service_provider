@@ -3,10 +3,7 @@ package com.hsp.home_service_provider.service.specialist;
 import com.hsp.home_service_provider.exception.MismatchException;
 import com.hsp.home_service_provider.exception.NotFoundException;
 import com.hsp.home_service_provider.exception.SpecialistException;
-import com.hsp.home_service_provider.model.Avatar;
-import com.hsp.home_service_provider.model.Order;
-import com.hsp.home_service_provider.model.Specialist;
-import com.hsp.home_service_provider.model.SubService;
+import com.hsp.home_service_provider.model.*;
 import com.hsp.home_service_provider.model.enums.SpecialistStatus;
 import com.hsp.home_service_provider.repository.specialist.SpecialistRepository;
 import com.hsp.home_service_provider.service.order.OrderService;
@@ -81,6 +78,16 @@ public class SpecialistService {
             orders.addAll(ordersFind);
         }
         return orders;
+    }
+
+    public void applyNegativeScoreAndCheckIfScoreOfSpecialistLessThanOneChangeStatus
+            (Specialist specialist, long hoursDelay) {
+        if (hoursDelay >= 1){
+            specialist.setScore(specialist.getScore() - hoursDelay);
+            if (specialist.getScore() < 0)
+                specialist.setSpecialistStatus(SpecialistStatus.AWAITING_CONFIRMATION);
+            specialistRepository.save(specialist);
+        }
     }
 
 }
