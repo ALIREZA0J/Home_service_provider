@@ -4,6 +4,7 @@ package com.hsp.home_service_provider.controller;
 import com.hsp.home_service_provider.dto.main_service.MainServiceResponse;
 import com.hsp.home_service_provider.dto.main_service.MainServiceSaveRequest;
 import com.hsp.home_service_provider.dto.specialist.SpecialistResponse;
+import com.hsp.home_service_provider.dto.specialist.SpecialistSubServiceRequest;
 import com.hsp.home_service_provider.dto.sub_service.SubServiceResponse;
 import com.hsp.home_service_provider.dto.sub_service.SubServiceSaveRequest;
 import com.hsp.home_service_provider.dto.sub_service.SubServiceUpdateRequest;
@@ -57,14 +58,16 @@ public class AdminController {
         SubService subService = SubServiceMapper.INSTANCE.subServiceSaveRequestToModel(request);
         SubService registerSubService = adminService
                 .registerSubService(subService, subService.getMainService().getServiceName());
-        return new ResponseEntity<>(SubServiceMapper.INSTANCE.subServiceModelToSubServiceResponse(registerSubService),HttpStatus.CREATED);
+        return new ResponseEntity<>
+                (SubServiceMapper.INSTANCE.subServiceModelToSubServiceResponse(registerSubService),HttpStatus.CREATED);
     }
 
     @PutMapping("/update-Sub-Service")
     public ResponseEntity<SubServiceResponse> updateSubService(@RequestBody SubServiceUpdateRequest request){
         SubService subService = SubServiceMapper.INSTANCE.subServiceUpdateRequestToModel(request);
         SubService updateSubService = adminService.updateSubService(subService);
-        return new ResponseEntity<>(SubServiceMapper.INSTANCE.subServiceModelToSubServiceResponse(updateSubService), HttpStatus.OK);
+        return new ResponseEntity<>
+                (SubServiceMapper.INSTANCE.subServiceModelToSubServiceResponse(updateSubService), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete-Sub_service")
