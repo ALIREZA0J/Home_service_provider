@@ -6,6 +6,7 @@ import com.hsp.home_service_provider.repository.customer.CustomerRepository;
 import com.hsp.home_service_provider.service.address.AddressService;
 import com.hsp.home_service_provider.service.offer.OfferService;
 import com.hsp.home_service_provider.service.order.OrderService;
+import com.hsp.home_service_provider.service.specialist.SpecialistService;
 import com.hsp.home_service_provider.service.subservice.SubServiceService;
 import com.hsp.home_service_provider.utility.Validation;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -26,6 +29,7 @@ public class CustomerService {
     private final OfferService offerService;
     private final SubServiceService subServiceService;
     private final Validation validation;
+    private SpecialistService specialistService;
 
 
     public Customer register(Customer customer){
@@ -104,4 +108,39 @@ public class CustomerService {
         else throw new OutOfTimeException("Changing the state to start at the present time is not allowed.");
 
     }
+    @Transactional
+    public List<Order> displayOrdersStarted(Long customerId){
+        Customer customer = findById(customerId);
+        return orderService.findOrderInStartedStatus(customer);
+    }
+    public void endOfWorkRegistration(Long orderId){
+        Order order = orderService.findById(orderId);
+        checkForNegativeScore(order);
+        orderService.changeStatusOfOrderToDone(orderId);
+    }
+
+    public void checkForNegativeScore(Order order){
+        Offer offerAccepted = offerService.findOfferOfOrderAccepted(order);
+        Integer daysOfWork = offerAccepted.getDaysOfWork();
+        int extraDays = (daysOfWork - 1);
+        LocalDate dateOfEndWork = order.getDateOfWork().plusDays(extraDays);
+        LocalTime durationOfWork = offerAccepted.getDurationOfWork();
+        LocalTime plusHours = order.getTimeOfWork().plusHours(durationOfWork.getHour());
+        LocalTime timeOfEndWork = plusHours.plusMinutes(durationOfWork.getMinute());
+
+        if (LocalDate.now().isEqual(dateOfEndWork)){
+            long hoursDelay = ChronoUnit.HOURS.between(timeOfEndWork,LocalTime.now());
+            specialistService
+                    .applyNegativeScoreAndCheckIfScoreOfSpecialistLessThanOneChangeStatus
+                            (offerAccepted.getSpecialist(), hoursDelay);
+        } else if (LocalDate.now().isAfter(dateOfEndWork)){
+            LocalDateTime localDateTimeEnd = LocalDateTime.of(dateOfEndWork, timeOfEndWork);
+            long hoursDelay = ChronoUnit.HOURS.between(localDateTimeEnd, LocalDateTime.now());
+            specialistService
+                    .applyNegativeScoreAndCheckIfScoreOfSpecialistLessThanOneChangeStatus
+                            (offerAccepted.getSpecialist(), hoursDelay);
+        }
+    }
+
+
 }
