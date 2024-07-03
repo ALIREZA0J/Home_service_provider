@@ -6,19 +6,25 @@ import com.hsp.home_service_provider.dto.address.AddressSaveRequest;
 import com.hsp.home_service_provider.dto.customer.CustomerChangePasswordRequest;
 import com.hsp.home_service_provider.dto.customer.CustomerResponse;
 import com.hsp.home_service_provider.dto.customer.CustomerSaveRequest;
+import com.hsp.home_service_provider.dto.offer.OfferResponse;
 import com.hsp.home_service_provider.dto.order.OrderResponse;
 import com.hsp.home_service_provider.dto.order.OrderSaveRequest;
 import com.hsp.home_service_provider.mapper.AddressMapper;
 import com.hsp.home_service_provider.mapper.CustomerMapper;
+import com.hsp.home_service_provider.mapper.OfferMapper;
 import com.hsp.home_service_provider.mapper.OrderMapper;
 import com.hsp.home_service_provider.model.Address;
 import com.hsp.home_service_provider.model.Customer;
+import com.hsp.home_service_provider.model.Offer;
 import com.hsp.home_service_provider.model.Order;
 import com.hsp.home_service_provider.service.customer.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,5 +61,15 @@ public class CustomerController {
         Order order = OrderMapper.INSTANCE.orderSaveRequestToModel(request);
         Order registerNewOrder = customerService.registerNewOrder(order);
         return new ResponseEntity<>(OrderMapper.INSTANCE.modelToOrderResponse(registerNewOrder),HttpStatus.CREATED);
+    }
+
+    @GetMapping("/display-WaitingOffers")
+    public ResponseEntity<List<OfferResponse>> displayOffersOfOrderInWaitingStatus(@RequestParam Long orderId){
+        List<Offer> offersFind = customerService.displayOffersOfOrderInWaitingStatus(orderId);
+        ArrayList<OfferResponse> offerResponses = new ArrayList<>();
+        for (Offer offer : offersFind) {
+            offerResponses.add(OfferMapper.INSTANCE.offerModelToOfferResponse(offer));
+        }
+        return new ResponseEntity<>(offerResponses,HttpStatus.OK);
     }
 }
