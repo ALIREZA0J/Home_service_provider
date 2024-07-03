@@ -87,5 +87,9 @@ public class OfferService {
         return offerRepository.findOffersByOrderAndOfferStatus(order, OfferStatus.WAITING);
     }
 
+    public Offer findOfferOfOrderAccepted(Order order){
+        return offerRepository.findOfferByOrderAndOfferStatus(order, OfferStatus.ACCEPTED);
+    }
+
 
 }
