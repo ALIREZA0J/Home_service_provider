@@ -85,4 +85,8 @@ public class CustomerService {
         Order order = orderService.findById(orderId);
         return offerService.displayOffersOfOrderSortByPriceAndScore(order);
     }
+
+    public void acceptOfferForOrder(Long offerId){
+        offerService.acceptedOffer(offerId);
+    }
 }
