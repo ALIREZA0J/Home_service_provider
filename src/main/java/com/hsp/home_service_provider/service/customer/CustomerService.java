@@ -81,8 +81,8 @@ public class CustomerService {
         return orderService.register(order);
     }
 
-    public List<Offer> displayOffersOfOrderInWaitingStatus(Long orderId){
+    public List<Offer> displayOffersOfOrderInWaitingStatusAndSortByPriceAndScore(Long orderId){
         Order order = orderService.findById(orderId);
-        return offerService.findOffersOfOrderIsWaitingStatus(order);
+        return offerService.displayOffersOfOrderSortByPriceAndScore(order);
     }
 }
