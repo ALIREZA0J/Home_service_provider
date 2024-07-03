@@ -10,6 +10,7 @@ import com.hsp.home_service_provider.repository.order.OrderRepository;
 import com.hsp.home_service_provider.utility.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -19,7 +20,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final Validation validation;
 
-    public Order register(Order order){
+    public Order register(Order order) {
         if (validation.checkProposedDateNotBeforeToday(order.getDateOfWork()))
             throw new OrderException("Date of work most be in future.");
         validation.checkDescriptionNotBlank(order.getDescription());
@@ -28,11 +29,11 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public Order findById(Long id){
-        return orderRepository.findById(id).orElseThrow(() -> new NotFoundException("Order with (id:"+id+") not found."));
+    public Order findById(Long id) {
+        return orderRepository.findById(id).orElseThrow(() -> new NotFoundException("Order with (id:" + id + ") not found."));
     }
 
-    public List<Order> findOrdersBySubServiceAndOrderStatus(SubService subService){
+    public List<Order> findOrdersBySubServiceAndOrderStatus(SubService subService) {
         List<Order> ordersWaitingToSuggestion = orderRepository
                 .findOrdersBySubServiceAndOrderStatus(subService, OrderStatus.WAITING_FOR_THE_SUGGESTION_OF_SPECIALIST);
         List<Order> ordersWaitingForSelection = orderRepository
@@ -48,21 +49,24 @@ public class OrderService {
             orderRepository.save(order);
         }
     }
-    public void changeStatusOfOrderToWaitingForSpecialistGoToCustomerPlace(Long orderId){
+
+    public void changeStatusOfOrderToWaitingForSpecialistGoToCustomerPlace(Long orderId) {
         Order order = findById(orderId);
         if (order.getOrderStatus().equals(OrderStatus.WAITING_FOR_SPECIALIST_SELECTION)) {
             order.setOrderStatus(OrderStatus.WAITING_FOR_THE_SPECIALIST_TO_COME_TO_YOUR_PLACE);
             orderRepository.save(order);
         }
     }
-    public void changeStatusOfOrderToStart(Long orderId){
+
+    public void changeStatusOfOrderToStart(Long orderId) {
         Order order = findById(orderId);
         if (order.getOrderStatus().equals(OrderStatus.WAITING_FOR_THE_SPECIALIST_TO_COME_TO_YOUR_PLACE)) {
             order.setOrderStatus(OrderStatus.STARTED);
             orderRepository.save(order);
         }
     }
-    public void changeStatusOfOrderToDone(Long orderId){
+
+    public void changeStatusOfOrderToDone(Long orderId) {
         Order order = findById(orderId);
         if (order.getOrderStatus().equals(OrderStatus.STARTED)) {
             order.setOrderStatus(OrderStatus.DONE);
@@ -76,4 +80,7 @@ public class OrderService {
                         (customer, OrderStatus.WAITING_FOR_THE_SPECIALIST_TO_COME_TO_YOUR_PLACE);
     }
 
+    public List<Order> findOrderInStartedStatus(Customer customer) {
+        return orderRepository.findOrdersByCustomerAndOrderStatus(customer, OrderStatus.STARTED);
+    }
 }
