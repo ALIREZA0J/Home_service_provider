@@ -127,4 +127,10 @@ public class GlobalExceptionHandler {
         ExceptionDTO exceptionDTO = new ExceptionDTO(e.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(exceptionDTO, HttpStatus.CONFLICT);
     }
+    @ExceptionHandler(OutOfTimeException.class)
+    public ResponseEntity<ExceptionDTO> outOfTimeException(OutOfTimeException e){
+        log.warn(e.getMessage());
+        ExceptionDTO exceptionDTO = new ExceptionDTO(e.getMessage(), LocalDateTime.now());
+        return new ResponseEntity<>(exceptionDTO, HttpStatus.CONFLICT);
+    }
 }
