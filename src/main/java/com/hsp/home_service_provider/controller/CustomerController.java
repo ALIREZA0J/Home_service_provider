@@ -7,6 +7,7 @@ import com.hsp.home_service_provider.dto.customer.CustomerChangePasswordRequest;
 import com.hsp.home_service_provider.dto.customer.CustomerResponse;
 import com.hsp.home_service_provider.dto.customer.CustomerSaveRequest;
 import com.hsp.home_service_provider.dto.offer.OfferResponse;
+import com.hsp.home_service_provider.dto.order.OrderOfCustomerResponse;
 import com.hsp.home_service_provider.dto.order.OrderResponse;
 import com.hsp.home_service_provider.dto.order.OrderSaveRequest;
 import com.hsp.home_service_provider.mapper.AddressMapper;
@@ -77,5 +78,22 @@ public class CustomerController {
     public ResponseEntity<String> acceptAnOfferForOrder(@RequestParam Long offerId){
         customerService.acceptOfferForOrder(offerId);
         return new ResponseEntity<>("Offer with (id:"+offerId+") is accepted.",HttpStatus.OK);
+    }
+
+    @GetMapping("/display-OrdersInWaitingForSpecialistComeToCustomerPlace")
+    public ResponseEntity<List<OrderOfCustomerResponse>> displayOrdersInWaitingForSpecialistComeToCustomerPlace
+            (@RequestParam Long customerId){
+        List<Order> orders = customerService.displayOrdersInWaitingForSpecialistComeToCustomerPlace(customerId);
+        ArrayList<OrderOfCustomerResponse> orderOfCustomerResponses = new ArrayList<>();
+        for (Order order :
+                orders) {
+            orderOfCustomerResponses.add(OrderMapper.INSTANCE.modelToOrderOfCustomerResponse(order));
+        }
+        return new ResponseEntity<>(orderOfCustomerResponses,HttpStatus.OK);
+    }
+    @PutMapping("/registration-of-the_start-of-work")
+    public ResponseEntity<String> registrationOfTheStartOfWork(@RequestParam Long orderId){
+        customerService.registrationOfTheStartOfWork(orderId);
+        return new ResponseEntity<>("",HttpStatus.OK);
     }
 }
