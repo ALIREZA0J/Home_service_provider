@@ -1,5 +1,6 @@
 package com.hsp.home_service_provider.mapper;
 
+import com.hsp.home_service_provider.dto.order.OrderOfCustomerResponse;
 import com.hsp.home_service_provider.dto.order.OrderResponse;
 import com.hsp.home_service_provider.dto.order.OrderSaveRequest;
 import com.hsp.home_service_provider.model.Order;
@@ -13,4 +14,6 @@ public interface OrderMapper {
     Order orderSaveRequestToModel(OrderSaveRequest request);
 
     OrderResponse modelToOrderResponse(Order order);
+
+    OrderOfCustomerResponse modelToOrderOfCustomerResponse(Order order);
 }
