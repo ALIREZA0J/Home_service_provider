@@ -12,6 +12,7 @@ import com.hsp.home_service_provider.utility.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class SpecialistService {
             throw new SpecialistException("Specialist with (gmail: "+specialist.getGmail()+") is already exist");
         Avatar avatar = AvatarUtil.checkPhotoFileAndMakeAvatarForSpecialist(photoPath, specialist);
         specialist.setAvatar(avatar);
+        specialist.setRegistrationDate(LocalDate.now());
         specialist.setSpecialistStatus(SpecialistStatus.NEW);
         specialist.setScore(0.0);
         specialist.setCredit(0L);
