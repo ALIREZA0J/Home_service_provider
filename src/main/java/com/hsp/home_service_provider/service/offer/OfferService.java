@@ -69,7 +69,8 @@ public class OfferService {
             offerRepository.save(offer);
             orderService.changeStatusOfOrderToWaitingForSpecialistGoToCustomerPlace(offer.getOrder().getId());
             rejectedOtherOfferForOrder(offer.getOrder());
-        }
+        } else
+            throw new OfferException("Offer with (id:"+id+") has already been accepted or rejected.");
     }
 
     public void rejectedOtherOfferForOrder(Order order){
