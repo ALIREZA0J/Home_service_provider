@@ -85,8 +85,7 @@ public class CustomerController {
             (@RequestParam Long customerId){
         List<Order> orders = customerService.displayOrdersInWaitingForSpecialistComeToCustomerPlace(customerId);
         ArrayList<OrderOfCustomerResponse> orderOfCustomerResponses = new ArrayList<>();
-        for (Order order :
-                orders) {
+        for (Order order : orders) {
             orderOfCustomerResponses.add(OrderMapper.INSTANCE.modelToOrderOfCustomerResponse(order));
         }
         return new ResponseEntity<>(orderOfCustomerResponses,HttpStatus.OK);
@@ -94,6 +93,7 @@ public class CustomerController {
     @PutMapping("/registration-of-the_start-of-work")
     public ResponseEntity<String> registrationOfTheStartOfWork(@RequestParam Long orderId){
         customerService.registrationOfTheStartOfWork(orderId);
-        return new ResponseEntity<>("",HttpStatus.OK);
+        return new ResponseEntity<>("Order with (id:"+orderId+") Started.",HttpStatus.OK);
     }
+
 }
