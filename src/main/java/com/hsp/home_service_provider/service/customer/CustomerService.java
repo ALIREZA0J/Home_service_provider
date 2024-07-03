@@ -89,4 +89,13 @@ public class CustomerService {
     public void acceptOfferForOrder(Long offerId){
         offerService.acceptedOffer(offerId);
     }
+
+    @Transactional
+    public List<Order> displayOrdersInWaitingForSpecialistComeToCustomerPlace(Long customerId){
+        Customer customer = findById(customerId);
+        return orderService.findOrdersInWaitingForSpecialistComeToLocation(customer);
+    }
+    public void registrationOfTheStartOfWork(Long orderId){
+        orderService.changeStatusOfOrderToStart(orderId);
+    }
 }
