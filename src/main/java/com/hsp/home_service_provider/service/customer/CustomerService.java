@@ -1,9 +1,6 @@
 package com.hsp.home_service_provider.service.customer;
 
-import com.hsp.home_service_provider.exception.CustomerException;
-import com.hsp.home_service_provider.exception.DuplicateException;
-import com.hsp.home_service_provider.exception.MismatchException;
-import com.hsp.home_service_provider.exception.NotFoundException;
+import com.hsp.home_service_provider.exception.*;
 import com.hsp.home_service_provider.model.*;
 import com.hsp.home_service_provider.repository.customer.CustomerRepository;
 import com.hsp.home_service_provider.service.address.AddressService;
@@ -16,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -96,6 +94,14 @@ public class CustomerService {
         return orderService.findOrdersInWaitingForSpecialistComeToLocation(customer);
     }
     public void registrationOfTheStartOfWork(Long orderId){
-        orderService.changeStatusOfOrderToStart(orderId);
+        Order order = orderService.findById(orderId);
+        if (order.getDateOfWork().isEqual(LocalDate.now()) ){
+            if (order.getTimeOfWork().equals(LocalTime.now()) || order.getTimeOfWork().isAfter(LocalTime.now())){
+                orderService.changeStatusOfOrderToStart(orderId);
+            }
+            else throw new OutOfTimeException("Changing the state to start at the present time is not allowed.");
+        }
+        else throw new OutOfTimeException("Changing the state to start at the present time is not allowed.");
+
     }
 }
