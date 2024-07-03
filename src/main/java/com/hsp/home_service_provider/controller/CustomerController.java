@@ -65,11 +65,17 @@ public class CustomerController {
 
     @GetMapping("/display-WaitingOffers")
     public ResponseEntity<List<OfferResponse>> displayOffersOfOrderInWaitingStatus(@RequestParam Long orderId){
-        List<Offer> offersFind = customerService.displayOffersOfOrderInWaitingStatus(orderId);
+        List<Offer> offersFind = customerService.displayOffersOfOrderInWaitingStatusAndSortByPriceAndScore(orderId);
         ArrayList<OfferResponse> offerResponses = new ArrayList<>();
         for (Offer offer : offersFind) {
             offerResponses.add(OfferMapper.INSTANCE.offerModelToOfferResponse(offer));
         }
         return new ResponseEntity<>(offerResponses,HttpStatus.OK);
+    }
+
+    @PutMapping("/accept-an-offer")
+    public ResponseEntity<String> acceptAnOfferForOrder(@RequestParam Long offerId){
+        customerService.acceptOfferForOrder(offerId);
+        return new ResponseEntity<>("Offer with (id:"+offerId+") is accepted.",HttpStatus.OK);
     }
 }
