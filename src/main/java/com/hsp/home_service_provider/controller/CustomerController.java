@@ -3,6 +3,8 @@ package com.hsp.home_service_provider.controller;
 
 import com.hsp.home_service_provider.dto.address.AddressResponse;
 import com.hsp.home_service_provider.dto.address.AddressSaveRequest;
+import com.hsp.home_service_provider.dto.comment.CommentResponse;
+import com.hsp.home_service_provider.dto.comment.CommentSaveRequest;
 import com.hsp.home_service_provider.dto.customer.CustomerChangePasswordRequest;
 import com.hsp.home_service_provider.dto.customer.CustomerResponse;
 import com.hsp.home_service_provider.dto.customer.CustomerSaveRequest;
@@ -10,14 +12,8 @@ import com.hsp.home_service_provider.dto.offer.OfferResponse;
 import com.hsp.home_service_provider.dto.order.OrderOfCustomerResponse;
 import com.hsp.home_service_provider.dto.order.OrderResponse;
 import com.hsp.home_service_provider.dto.order.OrderSaveRequest;
-import com.hsp.home_service_provider.mapper.AddressMapper;
-import com.hsp.home_service_provider.mapper.CustomerMapper;
-import com.hsp.home_service_provider.mapper.OfferMapper;
-import com.hsp.home_service_provider.mapper.OrderMapper;
-import com.hsp.home_service_provider.model.Address;
-import com.hsp.home_service_provider.model.Customer;
-import com.hsp.home_service_provider.model.Offer;
-import com.hsp.home_service_provider.model.Order;
+import com.hsp.home_service_provider.mapper.*;
+import com.hsp.home_service_provider.model.*;
 import com.hsp.home_service_provider.service.customer.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -112,4 +108,10 @@ public class CustomerController {
         return new ResponseEntity<>("Order with (id:"+orderId+") Done.",HttpStatus.OK);
     }
 
+    @PostMapping("/register-new-comment")
+    public ResponseEntity<CommentResponse> registerNewComment(@RequestBody CommentSaveRequest request){
+        Comment comment = CommentMapper.INSTANCE.commentSaveRequestToModel(request);
+        Comment registerComment = customerService.registerNewComment(comment);
+        return new ResponseEntity<>(CommentMapper.INSTANCE.modelToCommentResponse(registerComment), HttpStatus.CREATED);
+    }
 }
