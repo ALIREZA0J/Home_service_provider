@@ -1,7 +1,7 @@
 package com.hsp.home_service_provider.dto.order;
 
 import com.hsp.home_service_provider.dto.address.AddressResponse;
-import com.hsp.home_service_provider.dto.customer.CustomerOrderResponse;
+import com.hsp.home_service_provider.dto.customer.CustomerOtherResponse;
 import com.hsp.home_service_provider.dto.sub_service.SubServiceOrderResponse;
 import com.hsp.home_service_provider.model.enums.OrderStatus;
 
@@ -13,7 +13,7 @@ public record OrderResponse (String description,
                              LocalDate dateOfWork,
                              LocalTime timeOfWork,
                              OrderStatus orderStatus,
-                             CustomerOrderResponse customer,
+                             CustomerOtherResponse customer,
                              AddressResponse address,
                              SubServiceOrderResponse subService){
 }
