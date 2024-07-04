@@ -90,4 +90,10 @@ public class SpecialistService {
         }
     }
 
+    public void applyCommentScore(Specialist specialist,long commentScore){
+        if (specialist.getSpecialistStatus().equals(SpecialistStatus.ACCEPTED)){
+            specialist.setScore(specialist.getScore()+commentScore);
+            specialistRepository.save(specialist);
+        }
+    }
 }
