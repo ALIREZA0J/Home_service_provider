@@ -1,8 +1,6 @@
 package com.hsp.home_service_provider.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.*;
 
 @AllArgsConstructor
@@ -18,15 +16,13 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Min(value = 1)
-    @Max(value = 10)
     @Column(name = "score_of_specialist",nullable = false)
     private Integer score;
 
     @Column(name = "message")
     private String message;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
