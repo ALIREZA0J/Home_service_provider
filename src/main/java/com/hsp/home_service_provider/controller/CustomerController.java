@@ -40,7 +40,8 @@ public class CustomerController {
 
     @PutMapping("/change-password")
     public ResponseEntity<CustomerResponse> changePassword(@RequestBody CustomerChangePasswordRequest request){
-        Customer customer = customerService.changePassword(request.gmail(), request.password1(), request.password2());
+        Customer customer = customerService
+                .changePassword(request.gmail(), request.password(), request.newPassword(), request.confirmNewPassword());
         return new ResponseEntity<>
                 (CustomerMapper.INSTANCE.customerModelToCustomerResponse(customer), HttpStatus.OK);
     }
