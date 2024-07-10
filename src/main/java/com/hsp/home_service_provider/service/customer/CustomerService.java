@@ -102,7 +102,7 @@ public class CustomerService {
     public void registrationOfTheStartOfWork(Long orderId){
         Order order = orderService.findById(orderId);
         if (order.getDateOfWork().isEqual(LocalDate.now()) ){
-            if (order.getTimeOfWork().equals(LocalTime.now()) || order.getTimeOfWork().isAfter(LocalTime.now())){
+            if (order.getTimeOfWork().equals(LocalTime.now()) || order.getTimeOfWork().isBefore(LocalTime.now())){
                 orderService.changeStatusOfOrderToStart(orderId);
             }
             else throw new OutOfTimeException("Changing the state to start at the present time is not allowed.");
@@ -114,6 +114,11 @@ public class CustomerService {
     public List<Order> displayOrdersStarted(Long customerId){
         Customer customer = findById(customerId);
         return orderService.findOrderInStartedStatus(customer);
+    }
+
+    public List<Order> displayDoneOrders(Long customerId){
+        Customer customer = findById(customerId);
+        return orderService.findOrderInDoneStatus(customer);
     }
     public void endOfWorkRegistration(Long orderId){
         Order order = orderService.findById(orderId);
