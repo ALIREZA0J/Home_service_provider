@@ -45,12 +45,13 @@ public class SpecialistService {
     }
 
     @Transactional
-    public void changePassword(String gmail, String password1,String password2){
-        Specialist specialist = findByGmail(gmail);
+    public void changePassword(String gmail, String password, String newPassword, String confirmNewPassword){
+        Specialist specialist = specialistRepository.findSpecialistByGmailAndPassword(gmail,password)
+                .orElseThrow(() -> new NotFoundException("Wrong gmail or password"));
         validation.checkSpecialistStatusIfItWasOtherThanAcceptedThrowException(specialist.getSpecialistStatus());
-        if (!password1.equals(password2))
+        if (!newPassword.equals(confirmNewPassword))
             throw new MismatchException("Password and repeat password do not match");
-        specialist.setPassword(password2);
+        specialist.setPassword(confirmNewPassword);
         validation.validate(specialist);
         specialistRepository.save(specialist);
     }
