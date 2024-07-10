@@ -40,7 +40,8 @@ public class SpecialistController {
 
     @PutMapping("/change-password")
     public ResponseEntity<String> changePassword(@RequestBody SpecialistChangePasswordRequest request){
-        specialistService.changePassword(request.gmail(), request.password1(), request.password2());
+        specialistService
+                .changePassword(request.gmail(), request.password(), request.newPassword(), request.confirmNewPassword());
         return new ResponseEntity<>("Password change successfully.",HttpStatus.OK);
     }
 
