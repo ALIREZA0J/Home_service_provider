@@ -83,4 +83,7 @@ public class OrderService {
     public List<Order> findOrderInStartedStatus(Customer customer) {
         return orderRepository.findOrdersByCustomerAndOrderStatus(customer, OrderStatus.STARTED);
     }
+    public List<Order> findOrderInDoneStatus(Customer customer) {
+        return orderRepository.findOrdersByCustomerAndOrderStatus(customer, OrderStatus.DONE);
+    }
 }
