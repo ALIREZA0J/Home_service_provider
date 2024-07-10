@@ -44,11 +44,12 @@ public class CustomerService {
     }
 
     @Transactional
-    public Customer changePassword(String gmail, String password1,String password2){
-        Customer customer = findByGmail(gmail);
-        if (!password1.equals(password2))
+    public Customer changePassword(String gmail,String password, String newPassword, String confirmNewPassword){
+        Customer customer = customerRepository.findCustomerByGmailAndPassword(gmail, password)
+                .orElseThrow(() -> new NotFoundException("Wrong gmail or password"));
+        if (!newPassword.equals(confirmNewPassword))
             throw new MismatchException("Password and repeat password do not match");
-        customer.setPassword(password2);
+        customer.setPassword(confirmNewPassword);
         validation.validate(customer);
         return customerRepository.save(customer);
     }
