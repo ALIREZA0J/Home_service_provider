@@ -108,6 +108,16 @@ public class CustomerController {
         return new ResponseEntity<>("Order with (id:"+orderId+") Done.",HttpStatus.OK);
     }
 
+    @GetMapping("/display-DoneOrders")
+    public ResponseEntity<List<OrderOfCustomerResponse>> displayOrderInDoneStatus(@RequestParam Long customerId){
+        List<Order> orders = customerService.displayDoneOrders(customerId);
+        ArrayList<OrderOfCustomerResponse> orderOfCustomerResponses = new ArrayList<>();
+        for (Order order : orders) {
+            orderOfCustomerResponses.add(OrderMapper.INSTANCE.modelToOrderOfCustomerResponse(order));
+        }
+        return new ResponseEntity<>(orderOfCustomerResponses,HttpStatus.OK);
+    }
+
     @PostMapping("/register-new-comment")
     public ResponseEntity<CommentResponse> registerNewComment(@RequestBody CommentSaveRequest request){
         Comment comment = CommentMapper.INSTANCE.commentSaveRequestToModel(request);
