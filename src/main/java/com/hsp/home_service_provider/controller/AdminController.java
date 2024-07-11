@@ -91,6 +91,16 @@ public class AdminController {
         return new ResponseEntity<>(subServiceResponses,HttpStatus.OK);
     }
 
+    @GetMapping("/display-new-specialist")
+    public ResponseEntity<List<SpecialistResponse>> displayNewSpecialist(){
+        List<Specialist> specialists = adminService.displayNewSpecialist();
+        ArrayList<SpecialistResponse> specialistResponses = new ArrayList<>();
+        for (Specialist specialist : specialists) {
+            specialistResponses.add(SpecialistMapper.INSTANCE.specialistModelToSpecialistResponse(specialist));
+        }
+        return ResponseEntity.ok().body(specialistResponses);
+    }
+
     @PutMapping("/change-status-of-specialist")
     public ResponseEntity<SpecialistResponse> changeSpecialistStatusToAccept(@RequestParam String gmail){
         Specialist specialist = adminService.changeSpecialistStatusToAccept(gmail);
