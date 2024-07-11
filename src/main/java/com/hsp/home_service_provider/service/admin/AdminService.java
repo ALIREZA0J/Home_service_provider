@@ -89,7 +89,13 @@ public class AdminService {
         return customerService.filteredCustomer(customerFilter);
     }
 
+    @Transactional
     public List<Specialist> displayNewSpecialist(){
         return specialistService.findNewSpecialist();
+    }
+
+    @Transactional
+    public List<Specialist> displaySuspendedSpecialist(){
+        return specialistService.findSuspendedSpecialist();
     }
 }
