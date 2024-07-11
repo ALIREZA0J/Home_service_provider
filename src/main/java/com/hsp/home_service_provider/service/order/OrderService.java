@@ -10,6 +10,7 @@ import com.hsp.home_service_provider.repository.order.OrderRepository;
 import com.hsp.home_service_provider.utility.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -83,6 +84,7 @@ public class OrderService {
     public List<Order> findOrderInStartedStatus(Customer customer) {
         return orderRepository.findOrdersByCustomerAndOrderStatus(customer, OrderStatus.STARTED);
     }
+    @Transactional
     public List<Order> findOrderInDoneStatus(Customer customer) {
         return orderRepository.findOrdersByCustomerAndOrderStatus(customer, OrderStatus.DONE);
     }
