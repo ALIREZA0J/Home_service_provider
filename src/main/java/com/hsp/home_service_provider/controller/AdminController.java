@@ -101,6 +101,16 @@ public class AdminController {
         return ResponseEntity.ok().body(specialistResponses);
     }
 
+    @GetMapping("/display-suspended-specialist")
+    public ResponseEntity<List<SpecialistResponse>> displaySuspendedSpecialist(){
+        List<Specialist> specialists = adminService.displaySuspendedSpecialist();
+        ArrayList<SpecialistResponse> specialistResponses = new ArrayList<>();
+        for (Specialist specialist : specialists) {
+            specialistResponses.add(SpecialistMapper.INSTANCE.specialistModelToSpecialistResponse(specialist));
+        }
+        return ResponseEntity.ok().body(specialistResponses);
+    }
+
     @PutMapping("/change-status-of-specialist")
     public ResponseEntity<SpecialistResponse> changeSpecialistStatusToAccept(@RequestParam String gmail){
         Specialist specialist = adminService.changeSpecialistStatusToAccept(gmail);
