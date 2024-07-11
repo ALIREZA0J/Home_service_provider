@@ -1,5 +1,6 @@
 package com.hsp.home_service_provider.service.customer;
 
+import com.hsp.home_service_provider.dto.customer.CustomerFilter;
 import com.hsp.home_service_provider.exception.*;
 import com.hsp.home_service_provider.model.*;
 import com.hsp.home_service_provider.repository.customer.CustomerRepository;
@@ -9,8 +10,10 @@ import com.hsp.home_service_provider.service.offer.OfferService;
 import com.hsp.home_service_provider.service.order.OrderService;
 import com.hsp.home_service_provider.service.specialist.SpecialistService;
 import com.hsp.home_service_provider.service.subservice.SubServiceService;
+import com.hsp.home_service_provider.specification.CustomerSpecification;
 import com.hsp.home_service_provider.utility.Validation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -152,8 +155,19 @@ public class CustomerService {
 
     public Comment registerNewComment(Comment comment){
         comment.setCustomer(findByGmail(comment.getCustomer().getGmail()));
-        comment.setOffer(offerService.findById(comment.getOffer().getId()));
+        Offer offer = offerService.findById(comment.getOffer().getId());
+        if (offer.getComment() != null)
+            throw new CommentException("Offer with (id:"+offer.getId()+") had comment.");
+        comment.setOffer(offer);
         return commentService.register(comment);
     }
 
+    public Offer displayOfferAcceptForOrder(Long orderId){
+        Order order = orderService.findById(orderId);
+        return offerService.findOfferOfOrderAccepted(order);
+    }
+    public List<Customer> filteredCustomer(CustomerFilter customerFilter){
+        Specification<Customer> customer = CustomerSpecification.filterSpecialist(customerFilter);
+        return customerRepository.findAll(customer);
+    }
 }
