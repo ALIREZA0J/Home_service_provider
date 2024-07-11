@@ -1,16 +1,21 @@
 package com.hsp.home_service_provider.controller;
 
 
+import com.hsp.home_service_provider.dto.customer.CustomerFilter;
+import com.hsp.home_service_provider.dto.customer.CustomerResponse;
 import com.hsp.home_service_provider.dto.main_service.MainServiceResponse;
 import com.hsp.home_service_provider.dto.main_service.MainServiceSaveRequest;
+import com.hsp.home_service_provider.dto.specialist.SpecialistFilter;
 import com.hsp.home_service_provider.dto.specialist.SpecialistResponse;
 import com.hsp.home_service_provider.dto.specialist.SpecialistSubServiceRequest;
 import com.hsp.home_service_provider.dto.sub_service.SubServiceResponse;
 import com.hsp.home_service_provider.dto.sub_service.SubServiceSaveRequest;
 import com.hsp.home_service_provider.dto.sub_service.SubServiceUpdateRequest;
+import com.hsp.home_service_provider.mapper.CustomerMapper;
 import com.hsp.home_service_provider.mapper.MainServiceMapper;
 import com.hsp.home_service_provider.mapper.SpecialistMapper;
 import com.hsp.home_service_provider.mapper.SubServiceMapper;
+import com.hsp.home_service_provider.model.Customer;
 import com.hsp.home_service_provider.model.MainService;
 import com.hsp.home_service_provider.model.Specialist;
 import com.hsp.home_service_provider.model.SubService;
@@ -105,5 +110,27 @@ public class AdminController {
         adminService.removeSpecialistFromSubService(request.subServiceName(),request.specialistGmail());
         return new ResponseEntity<>
                 ("The specialist with the desired email was removed from the sub-service",HttpStatus.OK);
+    }
+
+    @GetMapping("/search-specialist")
+    public ResponseEntity<List<SpecialistResponse>> searchSpecialist(@RequestBody SpecialistFilter request){
+        List<Specialist> specialists = adminService.searchSpecialist(request);
+        ArrayList<SpecialistResponse> specialistResponses = new ArrayList<>();
+        for (Specialist specialist :
+                specialists) {
+            specialistResponses.add(SpecialistMapper.INSTANCE.specialistModelToSpecialistResponse(specialist));
+        }
+        return ResponseEntity.ok().body(specialistResponses);
+    }
+
+    @GetMapping("/search-customer")
+    public ResponseEntity<List<CustomerResponse>> searchCustomer(@RequestBody CustomerFilter request){
+        List<Customer> customers = adminService.searchCustomer(request);
+        ArrayList<CustomerResponse> customerResponses = new ArrayList<>();
+        for (Customer customer :
+                customers) {
+            customerResponses.add(CustomerMapper.INSTANCE.customerModelToCustomerResponse(customer));
+        }
+        return ResponseEntity.ok().body(customerResponses);
     }
 }
