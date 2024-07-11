@@ -88,4 +88,8 @@ public class AdminService {
     public List<Customer> searchCustomer(CustomerFilter customerFilter){
         return customerService.filteredCustomer(customerFilter);
     }
+
+    public List<Specialist> displayNewSpecialist(){
+        return specialistService.findNewSpecialist();
+    }
 }
