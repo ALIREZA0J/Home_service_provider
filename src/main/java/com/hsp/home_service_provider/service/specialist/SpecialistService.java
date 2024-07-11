@@ -113,4 +113,8 @@ public class SpecialistService {
         return specialistRepository.findSpecialistsBySpecialistStatus(SpecialistStatus.NEW);
     }
 
+    public List<Specialist> findSuspendedSpecialist(){
+        return specialistRepository.findSpecialistsBySpecialistStatus(SpecialistStatus.AWAITING_CONFIRMATION);
+    }
+
 }
