@@ -109,5 +109,8 @@ public class SpecialistService {
         return specialistRepository.findAll(specialist);
     }
 
+    public List<Specialist> findNewSpecialist(){
+        return specialistRepository.findSpecialistsBySpecialistStatus(SpecialistStatus.NEW);
+    }
 
 }
