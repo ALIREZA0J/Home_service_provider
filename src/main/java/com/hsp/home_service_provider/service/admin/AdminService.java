@@ -1,11 +1,11 @@
 package com.hsp.home_service_provider.service.admin;
 
+import com.hsp.home_service_provider.dto.customer.CustomerFilter;
+import com.hsp.home_service_provider.dto.specialist.SpecialistFilter;
 import com.hsp.home_service_provider.exception.AdminException;
-import com.hsp.home_service_provider.model.Admin;
-import com.hsp.home_service_provider.model.MainService;
-import com.hsp.home_service_provider.model.Specialist;
-import com.hsp.home_service_provider.model.SubService;
+import com.hsp.home_service_provider.model.*;
 import com.hsp.home_service_provider.repository.admin.AdminRepository;
+import com.hsp.home_service_provider.service.customer.CustomerService;
 import com.hsp.home_service_provider.service.mainservice.MainServiceService;
 import com.hsp.home_service_provider.service.specialist.SpecialistService;
 import com.hsp.home_service_provider.service.subservice.SubServiceService;
@@ -20,6 +20,7 @@ import java.util.List;
 public class AdminService {
     private final AdminRepository adminRepository;
     private final MainServiceService mainServiceService;
+    private final CustomerService customerService;
     private final SubServiceService subServiceService;
     private final SpecialistService specialistService;
 
@@ -78,5 +79,13 @@ public class AdminService {
         SubService subService = subServiceService.findByName(subServiceName);
         Specialist specialist = specialistService.findByGmail(specialistGmail);
         subServiceService.removeSpecialistFromSubService(subService,specialist);
+    }
+
+    public List<Specialist> searchSpecialist(SpecialistFilter specialistFilter){
+        return specialistService.filteredSpecialist(specialistFilter);
+    }
+
+    public List<Customer> searchCustomer(CustomerFilter customerFilter){
+        return customerService.filteredCustomer(customerFilter);
     }
 }
