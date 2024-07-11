@@ -6,7 +6,8 @@ import com.hsp.home_service_provider.model.enums.OrderStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public record OrderOfCustomerResponse(String description,
+public record OrderOfCustomerResponse(Long id,
+                                      String description,
                                       Long proposedPrice,
                                       LocalDate dateOfWork,
                                       LocalTime timeOfWork,
