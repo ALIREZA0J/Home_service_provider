@@ -5,7 +5,8 @@ import com.hsp.home_service_provider.dto.specialist.SpecialistResponseOffer;
 
 import java.time.LocalTime;
 
-public record OfferResponse(Long offerPrice,
+public record OfferResponse(Long id,
+                            Long offerPrice,
                             Integer daysOfWork,
                             LocalTime durationOfWork,
                             OrderResponse order,
