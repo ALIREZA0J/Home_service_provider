@@ -119,6 +119,12 @@ public class CustomerController {
         return new ResponseEntity<>(orderOfCustomerResponses,HttpStatus.OK);
     }
 
+    @GetMapping("/display-OfferAcceptForOrder")
+    public ResponseEntity<OfferResponse> displayOfferAcceptForOrder(@RequestParam Long orderId){
+        Offer offer = customerService.displayOfferAcceptForOrder(orderId);
+        return ResponseEntity.ok().body(OfferMapper.INSTANCE.offerModelToOfferResponse(offer));
+    }
+
     @PostMapping("/register-new-comment")
     public ResponseEntity<CommentResponse> registerNewComment(@RequestBody CommentSaveRequest request){
         Comment comment = CommentMapper.INSTANCE.commentSaveRequestToModel(request);
