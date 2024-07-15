@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Payment Form with Captcha</title>
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"/>
+    <link
+            rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.15.3/css/all.css"
+            integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk"
+            crossorigin="anonymous"
+    />
+    <style>
+        #captcha-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            margin-right: 2px;
+        }
+
+        #image {
+            margin: 0 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+            border: 2px solid #ffffff;
+            border-radius: 4px;
+            user-select: none;
+            background-color: #f8f9fa;
+            color: #8e35dc;
+        }
+
+        #user-input {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        #captchaInput {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        .form-label {
+            margin-top: 0.001cm;
+        }
+
+        .inline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        #btn {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: #fff;
+            margin-top: 20px;
+            background-color: #17a2b8;
+        }
+
+        .card {
+            background-color: #b2e2f6;
+            border-radius: 5px;
+        }
+
+        .mb-4 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color-adjust: economy;
+        }
+
+        #timer {
+            font-size: 1.2em;
+            color: #ff0073;
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="ten-countdown"></div>
+<div>
+    <section style="background-color: #ffffff">
+        <div class="container py-5">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-9 col-lg-7 col-xl-5">
+                    <div class="card">
+
+                        <div class="rounded-bottom">
+
+
+                            <div class="card-body">
+                                <p class="mb-4"><b>Your payment details</b></p>
+
+
+                                <form class="form-outline" id="paymentForm" action="#" th:action="@{/payment}" th:object="${paymentDTO}"
+                                      method="post">
+
+                                    <div class="card-title d-flex justify-content-between mb-0">
+                                        <p>Total Amount Due:
+                                            <th:block th:text="${totalAmount}"></th:block>
+                                            T
+                                        </p>
+                                    </div>
+
+                                    <input type="hidden" th:field="*{orderId}" id="orderId" name="orderId" />
+
+                                    <div id="timer">Time left: 10:00</div>
+                                    <label class="form-label" for="cardNumber">Card Number:</label>
+                                    <input type="text" id="cardNumber" class="form-control" placeholder="cardNumber"
+                                           th:field="*{cardNumber}"><br><br>
+
+
+                                    <label class="form-label" for="cvv">Cvv2:</label>
+                                    <input type="text" id="cvv" class="form-control" placeholder="Cvv2"
+                                           th:field="*{cvv2}"><br><br>
+
+                                    <label class="form-label" for="mm">Month:</label>
+                                    <input type="text" id="mm" class="form-control" placeholder="MM"
+                                           th:field="*{month}"><br><br>
+
+                                    <label class="form-label" for="yy">Year:</label>
+                                    <input type="text" id="yy" class="form-control" placeholder="YY"
+                                           th:field="*{year}"><br><br>
+
+                                    <label class="form-label" for="password">Password:</label>
+                                    <input type="password" maxlength="8" minlength="4"
+                                           id="password" class="form-control" placeholder="Password"
+                                           th:field="*{password}"><br><br>
+
+                                    <label for="captcha">CAPTCHA:</label>
+                                    <img th:src="@{captcha}" alt="Captcha Image"><br><br>
+                                    <input type="text" class="form-control" id="captcha"
+                                           th:field="*{captcha}"><br><br>
+
+                                    <button type="submit" value="submit" class="btn btn-info btn-block">
+                                        Pay now
+                                    </button>
+
+<!--                                    <div th:if="${message!=null}">-->
+<!--                                        <div th:replace="payment/session-expired :: expierd">-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+
+                                </form>
+
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", (event) => {
+        startTimer();
+    });
+
+    function startTimer() {
+        let duration = 600; // 10 min timer
+        const display = document.getElementById("timer");
+        const interval = setInterval(() => {
+            let minutes = parseInt(duration / 60, 10);
+            let seconds = parseInt(duration % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = `Time left: ${minutes}:${seconds}`;
+
+            if (--duration < 0) {
+                clearInterval(interval);
+                window.location.href = "http://localhost:8080/payment/session-expired.html";
+            }
+        }, 1000);
+    }
+
+
+</script>
+</body>
+</html>
