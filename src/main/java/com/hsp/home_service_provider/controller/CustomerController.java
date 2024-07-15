@@ -131,4 +131,10 @@ public class CustomerController {
         Comment registerComment = customerService.registerNewComment(comment);
         return new ResponseEntity<>(CommentMapper.INSTANCE.modelToCommentResponse(registerComment), HttpStatus.CREATED);
     }
+
+    @PutMapping("/pay-by-credit")
+    public ResponseEntity<String> payByCredit(@RequestParam Long customerId, @RequestParam Long orderId){
+        customerService.payByCredit(customerId, orderId);
+        return ResponseEntity.ok("pay successfully");
+    }
 }
