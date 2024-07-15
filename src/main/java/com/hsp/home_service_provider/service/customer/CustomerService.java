@@ -170,4 +170,33 @@ public class CustomerService {
         Specification<Customer> customer = CustomerSpecification.filterSpecialist(customerFilter);
         return customerRepository.findAll(customer);
     }
+
+    @Transactional
+    public void payOnline(Long orderId){
+        Offer offer = changeOrderStatusAndFindAcceptedOffer(orderId);
+        Specialist specialist = offer.getSpecialist();
+        long price =(long) (offer.getOfferPrice()* 0.7) ;
+        specialist.setCredit(price + specialist.getCredit());
+        specialistService.updateCredit(specialist);
+    }
+
+    @Transactional
+    public void payByCredit(Long customerId,Long orderId){
+        Customer customer = findById(customerId);
+        Offer offer = changeOrderStatusAndFindAcceptedOffer(orderId);
+        if (customer.getCredit() >= offer.getOfferPrice() ){
+            Specialist specialist = offer.getSpecialist();
+            long price =(long) (offer.getOfferPrice()* 0.7) ;
+            specialist.setCredit(price + specialist.getCredit());
+            specialistService.updateCredit(specialist);
+            customer.setCredit(customer.getCredit()-offer.getOfferPrice());
+            customerRepository.save(customer);
+        }else throw new CustomerException("Credit not enough");
+    }
+
+    private Offer changeOrderStatusAndFindAcceptedOffer(Long orderId) {
+        orderService.changeStatusOfOrderToPaid(orderId);
+        Order order = orderService.findById(orderId);
+        return offerService.findOfferOfOrderAccepted(order);
+    }
 }
