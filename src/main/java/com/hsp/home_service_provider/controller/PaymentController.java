@@ -70,7 +70,7 @@ public class PaymentController {
             }
             return new ResponseEntity<>(stringBuilder.toString(), HttpStatus.NOT_ACCEPTABLE);
         }
-
+        customerService.payOnline(paymentDTO.getOrderId());
         return new ResponseEntity<>("payment",HttpStatus.OK);
 
     }
