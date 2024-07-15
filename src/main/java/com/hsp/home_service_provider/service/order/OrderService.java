@@ -75,6 +75,14 @@ public class OrderService {
         }
     }
 
+    public void changeStatusOfOrderToPaid(Long orderId) {
+        Order order = findById(orderId);
+        if (order.getOrderStatus().equals(OrderStatus.DONE)) {
+            order.setOrderStatus(OrderStatus.PAID);
+            orderRepository.save(order);
+        }
+    }
+
     public List<Order> findOrdersInWaitingForSpecialistComeToLocation(Customer customer){
         return orderRepository
                 .findOrdersByCustomerAndOrderStatus
