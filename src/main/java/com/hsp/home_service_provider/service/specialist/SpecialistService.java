@@ -117,4 +117,8 @@ public class SpecialistService {
         return specialistRepository.findSpecialistsBySpecialistStatus(SpecialistStatus.AWAITING_CONFIRMATION);
     }
 
+    public void updateCredit(Specialist specialist){
+        specialistRepository.save(specialist);
+    }
+
 }
