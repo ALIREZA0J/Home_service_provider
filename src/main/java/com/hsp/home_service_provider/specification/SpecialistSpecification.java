@@ -39,11 +39,5 @@ public class SpecialistSpecification {
         });
     }
 
-    public static Specification<Specialist> hasSubService(String subServiceName) {
-        return (root, query, criteriaBuilder) -> {
-            Join<Specialist, SubService> specialistSubServiceJoin = root.join("subServices", JoinType.INNER);
-            return criteriaBuilder.equal(specialistSubServiceJoin.get("name"), subServiceName);
-        };
-    }
 
 }
