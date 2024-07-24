@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class SpecialistController {
 
     @PostMapping("/register")
     public ResponseEntity<SpecialistResponse> register(@RequestBody SpecialistSaveRequest request,
-                                                       @RequestParam String photoPath){
+                                                       @ModelAttribute String photoPath){
         Specialist specialist = SpecialistMapper.INSTANCE.specialistSaveRequestToModel(request);
         Specialist registerSpecialist = specialistService.register(specialist, photoPath);
         return new ResponseEntity<>
@@ -43,15 +44,17 @@ public class SpecialistController {
     }
 
     @PutMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestBody SpecialistChangePasswordRequest request){
+    public ResponseEntity<String> changePassword(@RequestBody SpecialistChangePasswordRequest request,
+                                                 Principal principal){
         specialistService
-                .changePassword(request.gmail(), request.password(), request.newPassword(), request.confirmNewPassword());
+                .changePassword(principal.getName(), request.oldPassword(),
+                        request.newPassword(), request.confirmNewPassword());
         return new ResponseEntity<>("Password change successfully.",HttpStatus.OK);
     }
 
     @GetMapping("/display-Orders-related-to-specialist")
-    public ResponseEntity<List<OrderResponse>> displayOrderRelatedToSpecialistSubService(@RequestParam String gmail){
-        List<Order> orders = specialistService.displayOrdersRelatedToSpecialist(gmail);
+    public ResponseEntity<List<OrderResponse>> displayOrderRelatedToSpecialistSubService(Principal principal){
+        List<Order> orders = specialistService.displayOrdersRelatedToSpecialist(principal.getName());
         ArrayList<OrderResponse> orderResponses = new ArrayList<>();
         for (Order order : orders) {
             orderResponses.add(OrderMapper.INSTANCE.modelToOrderResponse(order));
@@ -60,9 +63,9 @@ public class SpecialistController {
     }
 
     @PostMapping("/register-new-offer")
-    public ResponseEntity<OfferResponse> registerNewOffer(@RequestBody OfferSaveRequest request){
+    public ResponseEntity<OfferResponse> registerNewOffer(@RequestBody OfferSaveRequest request,Principal principal){
         Offer offer = OfferMapper.INSTANCE.offerSaveRequestToModel(request);
-        Offer registerOffer = offerService.register(offer);
+        Offer registerOffer = offerService.register(offer, principal.getName());
         return new ResponseEntity<>(OfferMapper.INSTANCE.offerModelToOfferResponse(registerOffer), HttpStatus.CREATED);
     }
 }
