@@ -133,4 +133,10 @@ public class GlobalExceptionHandler {
         ExceptionDTO exceptionDTO = new ExceptionDTO(e.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(exceptionDTO, HttpStatus.CONFLICT);
     }
+    @ExceptionHandler(ConfirmationException.class)
+    public ResponseEntity<ExceptionDTO> confirmationException(ConfirmationException e){
+        log.warn(e.getMessage());
+        ExceptionDTO exceptionDTO = new ExceptionDTO(e.getMessage(), LocalDateTime.now());
+        return new ResponseEntity<>(exceptionDTO, HttpStatus.CONFLICT);
+    }
 }
