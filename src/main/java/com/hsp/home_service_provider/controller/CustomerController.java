@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,25 +44,27 @@ public class CustomerController {
     }
 
     @PutMapping("/change-password")
-    public ResponseEntity<CustomerResponse> changePassword(@RequestBody CustomerChangePasswordRequest request){
+    public ResponseEntity<CustomerResponse> changePassword(@RequestBody CustomerChangePasswordRequest request,
+                                                           Principal principal){
         Customer customer = customerService
-                .changePassword(request.gmail(), request.password(), request.newPassword(), request.confirmNewPassword());
+                .changePassword(principal.getName(), request.oldPassword(),
+                        request.newPassword(), request.confirmNewPassword());
         return new ResponseEntity<>
                 (CustomerMapper.INSTANCE.customerModelToCustomerResponse(customer), HttpStatus.OK);
     }
 
     @PostMapping("/register-new-address")
-    public ResponseEntity<AddressResponse> registerNewAddress(@RequestBody AddressSaveRequest request){
+    public ResponseEntity<AddressResponse> registerNewAddress(@RequestBody AddressSaveRequest request, Principal principal){
         Address address = AddressMapper.INSTANCE.addressSaveRequestToModel(request);
-        Address registerNewAddress = customerService.registerNewAddress(address, request.customer().gmail());
+        Address registerNewAddress = customerService.registerNewAddress(address, principal.getName());
         return new ResponseEntity<>
                 (AddressMapper.INSTANCE.addressModelToAddressResponse(registerNewAddress), HttpStatus.CREATED);
     }
 
     @PostMapping("/register-new-order")
-    public ResponseEntity<OrderResponse> registerNewOrder(@RequestBody OrderSaveRequest request){
+    public ResponseEntity<OrderResponse> registerNewOrder(@RequestBody OrderSaveRequest request, Principal principal){
         Order order = OrderMapper.INSTANCE.orderSaveRequestToModel(request);
-        Order registerNewOrder = customerService.registerNewOrder(order);
+        Order registerNewOrder = customerService.registerNewOrder(order, principal.getName());
         return new ResponseEntity<>(OrderMapper.INSTANCE.modelToOrderResponse(registerNewOrder),HttpStatus.CREATED);
     }
 
@@ -84,8 +86,8 @@ public class CustomerController {
 
     @GetMapping("/display-OrdersInWaitingForSpecialistComeToCustomerPlace")
     public ResponseEntity<List<OrderOfCustomerResponse>> displayOrdersInWaitingForSpecialistComeToCustomerPlace
-            (@RequestParam Long customerId){
-        List<Order> orders = customerService.displayOrdersInWaitingForSpecialistComeToCustomerPlace(customerId);
+            (Principal principal){
+        List<Order> orders = customerService.displayOrdersInWaitingForSpecialistComeToCustomerPlace(principal.getName());
         ArrayList<OrderOfCustomerResponse> orderOfCustomerResponses = new ArrayList<>();
         for (Order order : orders) {
             orderOfCustomerResponses.add(OrderMapper.INSTANCE.modelToOrderOfCustomerResponse(order));
@@ -99,8 +101,8 @@ public class CustomerController {
     }
 
     @GetMapping("/display-OrdersInStartedStatus")
-    public ResponseEntity<List<OrderOfCustomerResponse>> displayOrdersInStartedStatus(@RequestParam Long customerId){
-        List<Order> orders = customerService.displayOrdersStarted(customerId);
+    public ResponseEntity<List<OrderOfCustomerResponse>> displayOrdersInStartedStatus(Principal principal){
+        List<Order> orders = customerService.displayOrdersStarted(principal.getName());
         ArrayList<OrderOfCustomerResponse> orderOfCustomerResponses = new ArrayList<>();
         for (Order order : orders) {
             orderOfCustomerResponses.add(OrderMapper.INSTANCE.modelToOrderOfCustomerResponse(order));
@@ -115,8 +117,8 @@ public class CustomerController {
     }
 
     @GetMapping("/display-DoneOrders")
-    public ResponseEntity<List<OrderOfCustomerResponse>> displayOrderInDoneStatus(@RequestParam Long customerId){
-        List<Order> orders = customerService.displayDoneOrders(customerId);
+    public ResponseEntity<List<OrderOfCustomerResponse>> displayOrderInDoneStatus(Principal principal){
+        List<Order> orders = customerService.displayDoneOrders(principal.getName());
         ArrayList<OrderOfCustomerResponse> orderOfCustomerResponses = new ArrayList<>();
         for (Order order : orders) {
             orderOfCustomerResponses.add(OrderMapper.INSTANCE.modelToOrderOfCustomerResponse(order));
@@ -138,8 +140,8 @@ public class CustomerController {
     }
 
     @PutMapping("/pay-by-credit")
-    public ResponseEntity<String> payByCredit(@RequestParam Long customerId, @RequestParam Long orderId){
-        customerService.payByCredit(customerId, orderId);
+    public ResponseEntity<String> payByCredit(Principal principal, @RequestParam Long orderId){
+        customerService.payByCredit(principal.getName(), orderId);
         return ResponseEntity.ok("pay successfully");
     }
 }
