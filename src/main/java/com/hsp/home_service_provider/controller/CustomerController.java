@@ -38,6 +38,11 @@ public class CustomerController {
                 (CustomerMapper.INSTANCE.customerModelToCustomerResponse(registerCustomer), HttpStatus.CREATED);
     }
 
+    @GetMapping(path = "/confirm")
+    public ResponseEntity<String> confirm(@RequestParam("token") String token) {
+        return ResponseEntity.ok(customerService.confirmToken(token));
+    }
+
     @PutMapping("/change-password")
     public ResponseEntity<CustomerResponse> changePassword(@RequestBody CustomerChangePasswordRequest request){
         Customer customer = customerService
