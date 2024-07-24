@@ -37,6 +37,10 @@ public class SpecialistController {
         return new ResponseEntity<>
                 (SpecialistMapper.INSTANCE.specialistModelToSpecialistResponse(registerSpecialist), HttpStatus.CREATED);
     }
+    @GetMapping(path = "/confirm")
+    public ResponseEntity<String> confirm(@RequestParam("token") String token) {
+        return ResponseEntity.ok(specialistService.confirmToken(token));
+    }
 
     @PutMapping("/change-password")
     public ResponseEntity<String> changePassword(@RequestBody SpecialistChangePasswordRequest request){
