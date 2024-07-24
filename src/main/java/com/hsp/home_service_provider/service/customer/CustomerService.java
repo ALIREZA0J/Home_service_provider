@@ -69,20 +69,15 @@ public class CustomerService {
     }
 
     @Transactional
-    public Customer changePassword(String gmail,String password, String newPassword, String confirmNewPassword){
-        Customer customer = customerRepository.findCustomerByGmailAndPassword(gmail, password)
-                .orElseThrow(() -> new NotFoundException("Wrong gmail or password"));
+    public Customer changePassword(String gmail, String oldPassword, String newPassword, String confirmNewPassword){
+        Customer customer = findByGmail(gmail);
+        if (!passwordEncoder.matches(oldPassword, customer.getPassword()))
+            throw new MismatchException("Wrong old password");
+        validation.checkPassword(newPassword);
         if (!newPassword.equals(confirmNewPassword))
-            throw new MismatchException("Password and repeat password do not match");
-        customer.setPassword(confirmNewPassword);
-        validation.validate(customer);
+            throw new MismatchException("new password and repeat password do not match");
+        customer.setPassword(passwordEncoder.encode(confirmNewPassword));
         return customerRepository.save(customer);
-    }
-
-
-    public Customer findById(Long id){
-        return customerRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Customer with (id:" + id + ") not found."));
     }
 
     public Customer findByGmail(String gmail){
@@ -96,12 +91,12 @@ public class CustomerService {
         return addressService.register(address);
     }
 
-    public Order registerNewOrder(Order order){
+    public Order registerNewOrder(Order order,String gmail){
         SubService subService = subServiceService.findByName(order.getSubService().getName());
         validation.checkProposedPriceNotLessThanSubService(order.getProposedPrice(), subService.getBasePrice());
         if (order.getProposedPrice() == null)
             order.setProposedPrice(subService.getBasePrice());
-        order.setCustomer(findByGmail(order.getCustomer().getGmail()));
+        order.setCustomer(findByGmail(gmail));
         order.setSubService(subService);
         order.setAddress(addressService.findById(order.getAddress().getId()));
         return orderService.register(order);
@@ -117,8 +112,8 @@ public class CustomerService {
     }
 
     @Transactional
-    public List<Order> displayOrdersInWaitingForSpecialistComeToCustomerPlace(Long customerId){
-        Customer customer = findById(customerId);
+    public List<Order> displayOrdersInWaitingForSpecialistComeToCustomerPlace(String gmail){
+        Customer customer = findByGmail(gmail);
         return orderService.findOrdersInWaitingForSpecialistComeToLocation(customer);
     }
     public void registrationOfTheStartOfWork(Long orderId){
@@ -133,13 +128,13 @@ public class CustomerService {
 
     }
     @Transactional
-    public List<Order> displayOrdersStarted(Long customerId){
-        Customer customer = findById(customerId);
+    public List<Order> displayOrdersStarted(String gmail){
+        Customer customer = findByGmail(gmail);
         return orderService.findOrderInStartedStatus(customer);
     }
 
-    public List<Order> displayDoneOrders(Long customerId){
-        Customer customer = findById(customerId);
+    public List<Order> displayDoneOrders(String gmail){
+        Customer customer = findByGmail(gmail);
         return orderService.findOrderInDoneStatus(customer);
     }
     public void endOfWorkRegistration(Long orderId){
@@ -199,8 +194,8 @@ public class CustomerService {
     }
 
     @Transactional
-    public void payByCredit(Long customerId,Long orderId){
-        Customer customer = findById(customerId);
+    public void payByCredit(String gmail,Long orderId){
+        Customer customer = findByGmail(gmail);
         Offer offer = changeOrderStatusAndFindAcceptedOffer(orderId);
         if (customer.getCredit() >= offer.getOfferPrice() ){
             Specialist specialist = offer.getSpecialist();
