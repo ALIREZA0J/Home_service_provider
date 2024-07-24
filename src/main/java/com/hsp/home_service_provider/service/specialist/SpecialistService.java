@@ -68,20 +68,16 @@ public class SpecialistService {
         specialistRepository.save(specialist);
     }
 
-    public Specialist findById(Long id){
-        return specialistRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Specialist with (id:"+id+") not found."));
-    }
-
     @Transactional
-    public void changePassword(String gmail, String password, String newPassword, String confirmNewPassword){
-        Specialist specialist = specialistRepository.findSpecialistByGmailAndPassword(gmail,password)
-                .orElseThrow(() -> new NotFoundException("Wrong gmail or password"));
+    public void changePassword(String gmail, String oldPassword, String newPassword, String confirmNewPassword){
+        Specialist specialist = findByGmail(gmail);
+        if (!passwordEncoder.matches(oldPassword, specialist.getPassword()))
+            throw new MismatchException("Wrong old password");
+        validation.checkPassword(newPassword);
         validation.checkSpecialistStatusIfItWasOtherThanAcceptedThrowException(specialist.getSpecialistStatus());
         if (!newPassword.equals(confirmNewPassword))
-            throw new MismatchException("Password and repeat password do not match");
-        specialist.setPassword(confirmNewPassword);
-        validation.validate(specialist);
+            throw new MismatchException("Password and repeat oldPassword do not match");
+        specialist.setPassword(passwordEncoder.encode(confirmNewPassword));
         specialistRepository.save(specialist);
     }
 
