@@ -44,6 +44,11 @@ public class Validation <T extends Person>{
         }
     }
 
+    public void checkPassword(String password){
+        if(!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$"))
+            throw new NotValidException("Password should contain At least one " +
+                    "(small word, capital letter, number , @ # ! % & *) and it must be at least eight characters. ");
+    }
     public void checkDescriptionPattern(String str){
         String regex = "^[A-Za-z\\s]+$";
         if (!Pattern.matches(regex, str)) {
