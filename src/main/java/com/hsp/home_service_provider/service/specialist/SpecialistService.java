@@ -1,24 +1,26 @@
 package com.hsp.home_service_provider.service.specialist;
 
 import com.hsp.home_service_provider.dto.specialist.SpecialistFilter;
+import com.hsp.home_service_provider.exception.ConfirmationException;
 import com.hsp.home_service_provider.exception.MismatchException;
 import com.hsp.home_service_provider.exception.NotFoundException;
 import com.hsp.home_service_provider.exception.SpecialistException;
-import com.hsp.home_service_provider.model.Avatar;
-import com.hsp.home_service_provider.model.Order;
-import com.hsp.home_service_provider.model.Specialist;
-import com.hsp.home_service_provider.model.SubService;
+import com.hsp.home_service_provider.model.*;
 import com.hsp.home_service_provider.model.enums.SpecialistStatus;
 import com.hsp.home_service_provider.repository.specialist.SpecialistRepository;
+import com.hsp.home_service_provider.service.confirmation_token.ConfirmationTokenService;
+import com.hsp.home_service_provider.service.email.EmailSender;
 import com.hsp.home_service_provider.service.order.OrderService;
 import com.hsp.home_service_provider.specification.SpecialistSpecification;
 import com.hsp.home_service_provider.utility.AvatarUtil;
+import com.hsp.home_service_provider.utility.EmailUtil;
 import com.hsp.home_service_provider.utility.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -30,19 +32,40 @@ public class SpecialistService {
     private final SpecialistRepository specialistRepository;
     private final OrderService orderService;
     private final Validation validation;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final ConfirmationTokenService confirmationTokenService;
+    private final EmailSender emailSender;
 
     @Transactional
     public Specialist register(Specialist specialist, String photoPath)  {
         validation.validate(specialist);
         if (specialistRepository.findSpecialistByGmail(specialist.getGmail()).isPresent())
             throw new SpecialistException("Specialist with (gmail: "+specialist.getGmail()+") is already exist");
-        Avatar avatar = AvatarUtil.checkPhotoFileAndMakeAvatarForSpecialist(photoPath, specialist);
-        specialist.setAvatar(avatar);
-        specialist.setRegistrationDate(LocalDate.now());
-        specialist.setSpecialistStatus(SpecialistStatus.NEW);
-        specialist.setScore(0.0);
-        specialist.setCredit(0L);
-        return specialistRepository.save(specialist);
+        specialist.setAvatar(AvatarUtil.checkPhotoFileAndMakeAvatarForSpecialist(photoPath, specialist));
+        specialist.setPassword(passwordEncoder.encode(specialist.getPassword()));
+        Specialist savedSpecialist = specialistRepository.save(specialist);
+        ConfirmationToken confirmationToken = confirmationTokenService
+                .saveConfirmationToken(ConfirmationToken.builder().setSpecialist(savedSpecialist).build());
+        emailSender.send(savedSpecialist.getGmail(),
+                EmailUtil.buildEmail(savedSpecialist.getFirstName()+" "+savedSpecialist.getLastName(),
+                        "http://localhost:8080/customer/confirm?token="+confirmationToken.getToken()));
+        return savedSpecialist;
+    }
+    @Transactional
+    public String confirmToken(String token) {
+        ConfirmationToken confirmationToken = confirmationTokenService.getToken(token);
+        if (confirmationToken.getConfirmedAt() != null)
+            throw new ConfirmationException("email already confirmed");
+        if (confirmationToken.getExpiresAt().isBefore(LocalDateTime.now()))
+            throw new ConfirmationException("token expired");
+        confirmationTokenService.setConfirmedAt(token);
+        makeActiveSpecialist(confirmationToken.getSpecialist());
+        return "confirmed";
+    }
+
+    private void makeActiveSpecialist(Specialist specialist) {
+        specialist.setIsActive(true);
+        specialistRepository.save(specialist);
     }
 
     public Specialist findById(Long id){
