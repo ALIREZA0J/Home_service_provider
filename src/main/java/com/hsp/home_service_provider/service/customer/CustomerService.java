@@ -6,14 +6,18 @@ import com.hsp.home_service_provider.model.*;
 import com.hsp.home_service_provider.repository.customer.CustomerRepository;
 import com.hsp.home_service_provider.service.address.AddressService;
 import com.hsp.home_service_provider.service.comment.CommentService;
+import com.hsp.home_service_provider.service.confirmation_token.ConfirmationTokenService;
+import com.hsp.home_service_provider.service.email.EmailSender;
 import com.hsp.home_service_provider.service.offer.OfferService;
 import com.hsp.home_service_provider.service.order.OrderService;
 import com.hsp.home_service_provider.service.specialist.SpecialistService;
 import com.hsp.home_service_provider.service.subservice.SubServiceService;
 import com.hsp.home_service_provider.specification.CustomerSpecification;
+import com.hsp.home_service_provider.utility.EmailUtil;
 import com.hsp.home_service_provider.utility.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,15 +39,33 @@ public class CustomerService {
     private final Validation validation;
     private final SpecialistService specialistService;
     private final CommentService commentService;
-
-
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final ConfirmationTokenService confirmationTokenService;
+    private final EmailSender emailSender;
     public Customer register(Customer customer){
         validation.validate(customer);
         if (customerRepository.findCustomerByGmail(customer.getGmail()).isPresent())
             throw new DuplicateException("A customer with this gmail is already exist.");
-        customer.setRegistrationDate(LocalDate.now());
-        customer.setCredit(0L);
-        return customerRepository.save(customer);
+        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        Customer savedCustomer = customerRepository.save(customer);
+        ConfirmationToken confirmationToken = confirmationTokenService
+                .saveConfirmationToken(ConfirmationToken.builder().setCustomer(savedCustomer).build());
+        emailSender.send(savedCustomer.getGmail(),
+                EmailUtil.buildEmail(savedCustomer.getFirstName()+" "+savedCustomer.getLastName(),
+                        "http://localhost:8080/customer/confirm?token="+confirmationToken.getToken()));
+        return savedCustomer;
+    }
+
+    @Transactional
+    public String confirmToken(String token) {
+        ConfirmationToken confirmationToken = confirmationTokenService.getToken(token);
+        if (confirmationToken.getConfirmedAt() != null)
+            throw new ConfirmationException("email already confirmed");
+        if (confirmationToken.getExpiresAt().isBefore(LocalDateTime.now()))
+            throw new ConfirmationException("token expired");
+        confirmationTokenService.setConfirmedAt(token);
+        makeActiveCustomer(confirmationToken.getCustomer());
+        return "confirmed";
     }
 
     @Transactional
@@ -57,10 +79,6 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
-    public Customer logIn(String gmail , String password){
-        return customerRepository.findCustomerByGmailAndPassword(gmail, password)
-                .orElseThrow(() -> new CustomerException("Gmail or password is wrong."));
-    }
 
     public Customer findById(Long id){
         return customerRepository.findById(id)
@@ -198,5 +216,10 @@ public class CustomerService {
         orderService.changeStatusOfOrderToPaid(orderId);
         Order order = orderService.findById(orderId);
         return offerService.findOfferOfOrderAccepted(order);
+    }
+
+    private void makeActiveCustomer(Customer customer){
+        customer.setIsActive(true);
+        customerRepository.save(customer);
     }
 }
