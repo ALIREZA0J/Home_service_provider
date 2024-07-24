@@ -37,7 +37,9 @@ public class SecurityConfiguration {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(s ->
                         s.requestMatchers("/customer/register").permitAll()
+                                .requestMatchers("/customer/confirm").permitAll()
                                 .requestMatchers("/specialist/register").permitAll()
+                                .requestMatchers("/specialist/confirm").permitAll()
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/customer/**").hasRole("CUSTOMER")
                                 .requestMatchers("/specialist/**").hasRole("SPECIALIST")
