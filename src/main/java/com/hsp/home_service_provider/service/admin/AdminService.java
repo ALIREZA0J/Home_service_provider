@@ -2,7 +2,7 @@ package com.hsp.home_service_provider.service.admin;
 
 import com.hsp.home_service_provider.dto.customer.CustomerFilter;
 import com.hsp.home_service_provider.dto.specialist.SpecialistFilter;
-import com.hsp.home_service_provider.exception.AdminException;
+import com.hsp.home_service_provider.exception.NotFoundException;
 import com.hsp.home_service_provider.model.*;
 import com.hsp.home_service_provider.repository.admin.AdminRepository;
 import com.hsp.home_service_provider.service.customer.CustomerService;
@@ -25,12 +25,9 @@ public class AdminService {
     private final SpecialistService specialistService;
 
 
-    public Admin logIn(String gmail , String password){
-        return adminRepository.findAdminByGmailAndPassword(gmail, password)
-                .orElseThrow(() -> new AdminException("Gmail or Password is wrong."));
+    public Admin findByGmail(String gmail){
+        return adminRepository.findAdminByGmail(gmail).orElseThrow(() -> new NotFoundException("Admin not found"));
     }
-
-
     public MainService registerMainService(MainService mainService){
         return mainServiceService.register(mainService);
     }
