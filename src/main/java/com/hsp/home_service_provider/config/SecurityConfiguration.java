@@ -54,12 +54,12 @@ public class SecurityConfiguration {
         auth
                 .userDetailsService(username -> {
                     try {
-                        return adminService.findByGmail(username);
-                    } catch (Exception ignore) {}
-                    try {
                         return customerService.findByGmail(username);
                     } catch (Exception ignore) {}
-                    return specialistService.findByGmail(username);
+                    try {
+                        return specialistService.findByGmail(username);
+                    } catch (Exception ignore) {}
+                    return adminService.findByGmail(username);
                 })
                 .passwordEncoder(passwordEncoder);
     }

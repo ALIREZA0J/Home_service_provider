@@ -2,13 +2,11 @@ package com.hsp.home_service_provider.model;
 
 import com.hsp.home_service_provider.model.enums.OrderStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-
 
 
 @AllArgsConstructor
@@ -54,7 +52,7 @@ public class Order {
     @JoinColumn(name = "sub_service_id")
     private SubService subService;
 
-    @OneToMany(mappedBy = "order" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<Offer> offers;
 
     @Override
@@ -66,6 +64,6 @@ public class Order {
                 " | time of work: " + timeOfWork +
                 " | order status: " + orderStatus +
                 " | address: " + address +
-                " | sub service of order: " + subService.getName() + " }" ;
+                " | sub service of order: " + subService.getName() + " }";
     }
 }
