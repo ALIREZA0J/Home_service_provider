@@ -32,7 +32,7 @@ public class SpecialistController {
 
     @PostMapping("/register")
     public ResponseEntity<SpecialistResponse> register(@RequestBody SpecialistSaveRequest request,
-                                                       @ModelAttribute String photoPath){
+                                                       @RequestParam String photoPath){
         Specialist specialist = SpecialistMapper.INSTANCE.specialistSaveRequestToModel(request);
         Specialist registerSpecialist = specialistService.register(specialist, photoPath);
         return new ResponseEntity<>
